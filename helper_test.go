@@ -662,3 +662,33 @@ func TestBlacklist(t *testing.T) {
 		h.WrapValue(v)
 	}()
 }
+
+func TestPriority(t *testing.T) {
+	func() {
+		defer func() {
+			_ = recover()
+		}()
+		h := NewHelper(nil, []string{"github.com/edwingeng/live"})
+		v := &internal.Data{
+			N: 100,
+		}
+		h.WrapValue(v)
+		t.Fatal("h.WrapValue() should panic")
+	}()
+
+	func() {
+		h := NewHelper([]string{"github.com/edwingeng/live/internal"}, []string{"github.com/edwingeng/live"})
+		v := &internal.Data{
+			N: 100,
+		}
+		d := h.WrapValue(v)
+		switch u := d.V().(type) {
+		case *internal.Data:
+			if u != v {
+				t.Fatal("u != v")
+			}
+		default:
+			t.Fatal("unexpected data type")
+		}
+	}()
+}

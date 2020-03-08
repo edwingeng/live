@@ -235,8 +235,8 @@ func (h Helper) checkType(t reflect.Type) {
 	case reflect.String:
 	case reflect.Struct:
 		pkgPath := t.PkgPath()
+		var found bool
 		if len(h.Whitelist) > 0 {
-			var found bool
 			for _, x := range h.Whitelist {
 				if x == pkgPath {
 					found = true
@@ -247,7 +247,7 @@ func (h Helper) checkType(t reflect.Type) {
 				panic(pkgPath + " is NOT in the whitelist of live.Helper")
 			}
 		}
-		if len(h.Blacklist) > 0 {
+		if !found && len(h.Blacklist) > 0 {
 			for _, x := range h.Blacklist {
 				if strings.HasPrefix(pkgPath, x) {
 					if n := len(x); n == len(pkgPath) || pkgPath[n] == '/' {
