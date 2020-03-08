@@ -9,67 +9,66 @@ import (
 )
 
 type Data struct {
-	d internal.Data
 	v interface{}
 }
 
 func (d Data) ToBool() bool {
-	return d.d.N == 1
+	return d.v.(*internal.Data).N == 1
 }
 
 func (d Data) ToInt() int {
-	return int(d.d.N)
+	return int(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToInt8() int8 {
-	return int8(d.d.N)
+	return int8(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToInt16() int16 {
-	return int16(d.d.N)
+	return int16(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToInt32() int32 {
-	return int32(d.d.N)
+	return int32(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToInt64() int64 {
-	return d.d.N
+	return d.v.(*internal.Data).N
 }
 
 func (d Data) ToUint() uint {
-	v, _ := binary.Uvarint(d.d.X)
+	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
 	return uint(v)
 }
 
 func (d Data) ToUint8() uint8 {
-	return uint8(d.d.N)
+	return uint8(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToUint16() uint16 {
-	return uint16(d.d.N)
+	return uint16(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToUint32() uint32 {
-	return uint32(d.d.N)
+	return uint32(d.v.(*internal.Data).N)
 }
 
 func (d Data) ToUint64() uint64 {
-	v, _ := binary.Uvarint(d.d.X)
+	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
 	return v
 }
 
 func (d Data) ToFloat32() float32 {
-	return math.Float32frombits(uint32(d.d.N))
+	return math.Float32frombits(uint32(d.v.(*internal.Data).N))
 }
 
 func (d Data) ToFloat64() float64 {
-	v, _ := binary.Uvarint(d.d.X)
+	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
 	return math.Float64frombits(v)
 }
 
 func (d Data) ToString() string {
-	return string(d.d.X)
+	return string(d.v.(*internal.Data).X)
 }
 
 func (d Data) V() interface{} {
@@ -79,10 +78,10 @@ func (d Data) V() interface{} {
 func (d Data) ToProtobufObj(obj interface {
 	Unmarshal([]byte) error
 }) {
-	if len(d.d.X) == 0 {
+	if len(d.v.(*internal.Data).X) == 0 {
 		return
 	}
-	err := obj.Unmarshal(d.d.X)
+	err := obj.Unmarshal(d.v.(*internal.Data).X)
 	if err != nil {
 		panic(err)
 	}
@@ -91,60 +90,56 @@ func (d Data) ToProtobufObj(obj interface {
 func (d Data) ToJSONObj(obj interface {
 	UnmarshalJSON([]byte) error
 }) {
-	if len(d.d.X) == 0 {
+	if len(d.v.(*internal.Data).X) == 0 {
 		return
 	}
-	err := obj.UnmarshalJSON(d.d.X)
+	err := obj.UnmarshalJSON(d.v.(*internal.Data).X)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (d Data) Marshal() (dAtA []byte, err error) {
-	if d.v != nil {
+	switch v := d.v.(type) {
+	case *internal.Data:
+		return v.Marshal()
+	default:
 		panic("Marshal does not support type " + reflect.TypeOf(d.v).Name())
 	}
-	return d.d.Marshal()
 }
 
 func (d Data) MarshalTo(dAtA []byte) (int, error) {
-	if d.v != nil {
+	switch v := d.v.(type) {
+	case *internal.Data:
+		return v.MarshalTo(dAtA)
+	default:
 		panic("MarshalTo does not support type " + reflect.TypeOf(d.v).Name())
 	}
-	return d.d.MarshalTo(dAtA)
 }
 
 func (d Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	if d.v != nil {
+	switch v := d.v.(type) {
+	case *internal.Data:
+		return v.MarshalToSizedBuffer(dAtA)
+	default:
 		panic("MarshalToSizedBuffer does not support type " + reflect.TypeOf(d.v).Name())
 	}
-	return d.d.MarshalToSizedBuffer(dAtA)
 }
 
 func (d Data) Size() (n int) {
-	if d.v != nil {
+	switch v := d.v.(type) {
+	case *internal.Data:
+		return v.Size()
+	default:
 		panic("Size does not support type " + reflect.TypeOf(d.v).Name())
 	}
-	return d.d.Size()
-}
-
-func (d *Data) Unmarshal(dAtA []byte) error {
-	if d.v != nil {
-		panic("Unmarshal does not support type " + reflect.TypeOf(d.v).Name())
-	}
-	return d.d.Unmarshal(dAtA)
 }
 
 func (d Data) MarshalJSON() ([]byte, error) {
-	if d.v != nil {
+	switch v := d.v.(type) {
+	case *internal.Data:
+		return v.MarshalJSON()
+	default:
 		panic("MarshalJSON does not support type " + reflect.TypeOf(d.v).Name())
 	}
-	return d.d.MarshalJSON()
-}
-
-func (d *Data) UnmarshalJSON(data []byte) error {
-	if d.v != nil {
-		panic("UnmarshalJSON does not support type " + reflect.TypeOf(d.v).Name())
-	}
-	return d.d.UnmarshalJSON(data)
 }

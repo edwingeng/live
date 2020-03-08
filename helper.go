@@ -18,111 +18,115 @@ type Helper struct {
 	Blacklist []string
 }
 
-func (h Helper) NewBool(v bool) Data {
+func (h Helper) WrapBool(v bool) Data {
 	if v {
-		return Data{d: internal.Data{N: 1}}
+		return Data{v: &internal.Data{
+			N: 1,
+		}}
 	} else {
-		return Data{}
+		return Data{v: &internal.Data{
+			N: 0,
+		}}
 	}
 }
 
-func (h Helper) NewInt(v int) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapInt(v int) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewInt8(v int8) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapInt8(v int8) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewInt16(v int16) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapInt16(v int16) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewInt32(v int32) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapInt32(v int32) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewInt64(v int64) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapInt64(v int64) Data {
+	return Data{v: &internal.Data{
 		N: v,
 	}}
 }
 
-func (h Helper) NewUint(v uint) Data {
+func (h Helper) WrapUint(v uint) Data {
 	switch v {
 	case 0:
-		return Data{}
+		return Data{v: &internal.Data{}}
 	default:
 		var buf [10]byte
 		n := binary.PutUvarint(buf[:], uint64(v))
-		return Data{d: internal.Data{
+		return Data{v: &internal.Data{
 			X: buf[:n],
 		}}
 	}
 }
 
-func (h Helper) NewUint8(v uint8) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapUint8(v uint8) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewUint16(v uint16) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapUint16(v uint16) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewUint32(v uint32) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapUint32(v uint32) Data {
+	return Data{v: &internal.Data{
 		N: int64(v),
 	}}
 }
 
-func (h Helper) NewUint64(v uint64) Data {
+func (h Helper) WrapUint64(v uint64) Data {
 	switch v {
 	case 0:
-		return Data{}
+		return Data{v: &internal.Data{}}
 	default:
 		var buf [10]byte
 		n := binary.PutUvarint(buf[:], v)
-		return Data{d: internal.Data{
+		return Data{v: &internal.Data{
 			X: buf[:n],
 		}}
 	}
 }
 
-func (h Helper) NewFloat32(v float32) Data {
+func (h Helper) WrapFloat32(v float32) Data {
 	b := math.Float32bits(v)
-	return Data{d: internal.Data{
+	return Data{v: &internal.Data{
 		N: int64(b),
 	}}
 }
 
-func (h Helper) NewFloat64(v float64) Data {
+func (h Helper) WrapFloat64(v float64) Data {
 	b := math.Float64bits(v)
 	var buf [10]byte
 	n := binary.PutUvarint(buf[:], b)
-	return Data{d: internal.Data{
+	return Data{v: &internal.Data{
 		X: buf[:n],
 	}}
 }
 
-func (h Helper) NewString(v string) Data {
-	return Data{d: internal.Data{
+func (h Helper) WrapString(v string) Data {
+	return Data{v: &internal.Data{
 		X: []byte(v),
 	}}
 }
 
-func (h Helper) NewProtobufObj(v interface{}) Data {
+func (h Helper) WrapProtobufObj(v interface{}) Data {
 	x, ok := v.(interface {
 		Marshal() ([]byte, error)
 		Unmarshal([]byte) error
@@ -135,15 +139,15 @@ func (h Helper) NewProtobufObj(v interface{}) Data {
 		if err != nil {
 			panic(err)
 		}
-		return Data{d: internal.Data{
+		return Data{v: &internal.Data{
 			X: bts,
 		}}
 	} else {
-		return Data{}
+		return Data{v: &internal.Data{}}
 	}
 }
 
-func (h Helper) NewJSONObj(v interface{}) Data {
+func (h Helper) WrapJSONObj(v interface{}) Data {
 	x, ok := v.(interface {
 		Marshal() ([]byte, error)
 		Unmarshal([]byte) error
@@ -156,15 +160,31 @@ func (h Helper) NewJSONObj(v interface{}) Data {
 		if err != nil {
 			panic(err)
 		}
-		return Data{d: internal.Data{
+		return Data{v: &internal.Data{
 			X: bts,
 		}}
 	} else {
-		return Data{}
+		return Data{v: &internal.Data{}}
 	}
 }
 
-func (h Helper) NewValue(v interface{}) Data {
+func (h Helper) FromProtobufBytes(v []byte) Data {
+	var d internal.Data
+	if err := d.Unmarshal(v); err != nil {
+		panic(err)
+	}
+	return Data{v: &d}
+}
+
+func (h Helper) FromJSONBytes(v []byte) Data {
+	var d internal.Data
+	if err := d.UnmarshalJSON(v); err != nil {
+		panic(err)
+	}
+	return Data{v: &d}
+}
+
+func (h Helper) WrapValue(v interface{}) Data {
 	if UnsafeMode {
 		return Data{v: v}
 	}
