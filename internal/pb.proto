@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package live;
 
-option go_package = "github.com/edwingeng/live";
+option go_package = "github.com/edwingeng/live/internal";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
@@ -16,5 +16,5 @@ option (gogoproto.goproto_sizecache_all) = false;
 
 message Data {
     bytes X = 1;
-    int64 V = 2;
+    int64 N = 2;
 }
