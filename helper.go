@@ -18,6 +18,13 @@ type Helper struct {
 	Blacklist []string
 }
 
+func NewHelper(whitelist, blacklist []string) Helper {
+	return Helper{
+		Whitelist: whitelist,
+		Blacklist: blacklist,
+	}
+}
+
 func (h Helper) WrapBool(v bool) Data {
 	if v {
 		return Data{v: &internal.Data{
@@ -219,7 +226,7 @@ func (h Helper) checkType(t reflect.Type) {
 	case reflect.Interface:
 		panic("live data does not support interface")
 	case reflect.Map:
-		h.checkMapKeyType(t)
+		h.checkMapKeyType(t.Key())
 		h.checkType(t.Elem())
 	case reflect.Ptr:
 		h.checkType(t.Elem())
@@ -242,8 +249,8 @@ func (h Helper) checkType(t reflect.Type) {
 		}
 		if len(h.Blacklist) > 0 {
 			for _, x := range h.Blacklist {
-				if strings.HasPrefix(x, pkgPath) {
-					if n := len(pkgPath); len(x) == n || x[n] == '/' {
+				if strings.HasPrefix(pkgPath, x) {
+					if n := len(x); n == len(pkgPath) || pkgPath[n] == '/' {
 						panic(pkgPath + " is in the blacklist of live.Helper")
 					}
 				}
