@@ -198,6 +198,9 @@ func (h Helper) FromJSONBytes(v []byte) Data {
 }
 
 func (h Helper) WrapValue(v interface{}) Data {
+	if v == nil {
+		return Data{}
+	}
 	if UnsafeMode {
 		return Data{v: v}
 	}

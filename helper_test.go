@@ -359,14 +359,12 @@ func TestBytes(t *testing.T) {
 		}
 	}
 
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var d Data
-		d.ToBytes()
-		t.Fatal("d.ToBytes() should panic")
-	}()
+	if h.WrapBytes(nil).ToBytes() != nil {
+		t.Fatal("h.WrapBytes(nil).ToBytes() != nil")
+	}
+	if Nil.ToBytes() != nil {
+		t.Fatal("Nil.ToBytes() != nil")
+	}
 }
 
 func TestComplex64(t *testing.T) {
@@ -484,25 +482,24 @@ func TestInterface(t *testing.T) {
 	var v interface{} = 100
 	h.WrapValue(v)
 
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var v interface{}
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
+	if h.WrapValue(nil).V() != nil {
+		t.Fatal("h.WrapValue(nil).V() != nil")
+	}
 
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var v interface {
-			Print()
+	if h.WrapValue([]byte(nil)).V() == nil {
+		t.Fatal("h.WrapValue([]byte(nil)).V() == nil")
+	}
+
+	type printer interface {
+		Print()
+	}
+	f := func(p printer) {
+		if h.WrapValue(p).V() != nil {
+			t.Fatal("h.WrapValue(p).V() != nil")
 		}
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
+	}
+	var p printer
+	f(p)
 }
 
 func TestMap(t *testing.T) {
