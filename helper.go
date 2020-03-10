@@ -133,6 +133,12 @@ func (h Helper) WrapString(v string) Data {
 	}}
 }
 
+func (h Helper) WrapBytes(v []byte) Data {
+	return Data{v: &internal.Data{
+		X: v,
+	}}
+}
+
 func (h Helper) WrapProtobufObj(v interface{}) Data {
 	x, ok := v.(interface {
 		Marshal() ([]byte, error)

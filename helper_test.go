@@ -1,6 +1,7 @@
 package live
 
 import (
+	"bytes"
 	"math"
 	"testing"
 
@@ -342,6 +343,29 @@ func TestString(t *testing.T) {
 		var d Data
 		d.ToString()
 		t.Fatal("d.ToString() should panic")
+	}()
+}
+
+func TestBytes(t *testing.T) {
+	h := NewHelper(nil, nil)
+	a := [][]byte{[]byte(""), []byte("hello"), []byte("it is a good day to die")}
+	for _, v := range a {
+		d := h.WrapBytes(v)
+		if !bytes.Equal(d.ToBytes(), v) {
+			t.Fatal("!bytes.Equal(d.ToBytes(), v)")
+		}
+		if d.v.(*internal.Data).X == nil {
+			t.Fatal("d.v.(*internal.Data).X == nil")
+		}
+	}
+
+	func() {
+		defer func() {
+			_ = recover()
+		}()
+		var d Data
+		d.ToBytes()
+		t.Fatal("d.ToBytes() should panic")
 	}()
 }
 

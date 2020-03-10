@@ -71,6 +71,10 @@ func (d Data) ToString() string {
 	return string(d.v.(*internal.Data).X)
 }
 
+func (d Data) ToBytes() []byte {
+	return d.v.(*internal.Data).X
+}
+
 func (d Data) V() interface{} {
 	return d.v
 }
