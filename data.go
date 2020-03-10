@@ -108,6 +108,9 @@ func (d Data) ToJSONObj(obj interface {
 }
 
 func (d Data) Marshal() (dAtA []byte, err error) {
+	if d.v == nil {
+		return nil, nil
+	}
 	switch v := d.v.(type) {
 	case *internal.Data:
 		return v.Marshal()
@@ -117,6 +120,9 @@ func (d Data) Marshal() (dAtA []byte, err error) {
 }
 
 func (d Data) MarshalTo(dAtA []byte) (int, error) {
+	if d.v == nil {
+		return 0, nil
+	}
 	switch v := d.v.(type) {
 	case *internal.Data:
 		return v.MarshalTo(dAtA)
@@ -126,6 +132,9 @@ func (d Data) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (d Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	if d.v == nil {
+		return 0, nil
+	}
 	switch v := d.v.(type) {
 	case *internal.Data:
 		return v.MarshalToSizedBuffer(dAtA)
@@ -135,6 +144,9 @@ func (d Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 }
 
 func (d Data) Size() (n int) {
+	if d.v == nil {
+		return 0
+	}
 	switch v := d.v.(type) {
 	case *internal.Data:
 		return v.Size()
@@ -144,6 +156,9 @@ func (d Data) Size() (n int) {
 }
 
 func (d Data) MarshalJSON() ([]byte, error) {
+	if d.v == nil {
+		return nil, nil
+	}
 	switch v := d.v.(type) {
 	case *internal.Data:
 		return v.MarshalJSON()
