@@ -8,10 +8,6 @@ import (
 	"github.com/edwingeng/live/internal"
 )
 
-var (
-	Nil Data
-)
-
 type Data struct {
 	v interface{}
 }
@@ -76,7 +72,11 @@ func (d Data) ToString() string {
 }
 
 func (d Data) ToBytes() []byte {
-	return d.v.(*internal.Data).X
+	if d.v != nil {
+		return d.v.(*internal.Data).X
+	} else {
+		return nil
+	}
 }
 
 func (d Data) V() interface{} {
