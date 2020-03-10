@@ -25,10 +25,6 @@ func NewHelper(whitelist, blacklist []string) Helper {
 	}
 }
 
-func (h Helper) Nil() Data {
-	return Data{}
-}
-
 func (h Helper) WrapBool(v bool) Data {
 	if v {
 		return Data{v: &internal.Data{

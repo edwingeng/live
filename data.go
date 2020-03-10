@@ -8,6 +8,10 @@ import (
 	"github.com/edwingeng/live/internal"
 )
 
+var (
+	Nil Data
+)
+
 type Data struct {
 	v interface{}
 }
