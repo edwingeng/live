@@ -2,6 +2,7 @@ package live
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"math"
 
 	"github.com/edwingeng/live/internal"
@@ -98,15 +99,23 @@ func (d Data) ToProtobufObj(obj interface {
 	}
 }
 
-func (d Data) ToJSONObj(obj interface {
-	UnmarshalJSON([]byte) error
-}) {
+func (d Data) ToJSONObj(obj interface{}) {
 	if len(d.v.(*internal.Data).X) == 0 {
 		return
 	}
-	err := obj.UnmarshalJSON(d.v.(*internal.Data).X)
-	if err != nil {
-		panic(err)
+	x, ok := obj.(interface {
+		UnmarshalJSON([]byte) error
+	})
+	if ok {
+		err := x.UnmarshalJSON(d.v.(*internal.Data).X)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		err := json.Unmarshal(d.v.(*internal.Data).X, obj)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 

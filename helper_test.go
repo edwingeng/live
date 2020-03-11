@@ -713,3 +713,18 @@ func TestPriority(t *testing.T) {
 		}
 	}()
 }
+
+func TestJSON(t *testing.T) {
+	var obj1, obj2 struct {
+		A int64
+		B string
+	}
+	obj1.A = 100
+	obj2.B = "hello"
+
+	h := NewHelper(nil, nil)
+	h.WrapJSONObj(&obj1).ToJSONObj(&obj2)
+	if obj2 != obj1 {
+		t.Fatal("obj2 != obj1")
+	}
+}

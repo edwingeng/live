@@ -2,6 +2,7 @@ package live
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"math"
 	"reflect"
 	"strings"
@@ -162,22 +163,29 @@ func (h Helper) WrapProtobufObj(v interface{}) Data {
 
 func (h Helper) WrapJSONObj(v interface{}) Data {
 	x, ok := v.(interface {
-		Marshal() ([]byte, error)
-		Unmarshal([]byte) error
+		MarshalJSON() ([]byte, error)
+		UnmarshalJSON([]byte) error
 	})
-	if !ok {
-		panic("v is not JSON compatible")
-	}
-	if x != nil {
-		bts, err := x.Marshal()
+	if ok {
+		if x != nil {
+			bts, err := x.MarshalJSON()
+			if err != nil {
+				panic(err)
+			}
+			return Data{v: &internal.Data{
+				X: bts,
+			}}
+		} else {
+			return Data{v: &internal.Data{}}
+		}
+	} else {
+		bts, err := json.Marshal(v)
 		if err != nil {
 			panic(err)
 		}
 		return Data{v: &internal.Data{
 			X: bts,
 		}}
-	} else {
-		return Data{v: &internal.Data{}}
 	}
 }
 
