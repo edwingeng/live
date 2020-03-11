@@ -3,7 +3,6 @@ package live
 import (
 	"encoding/binary"
 	"math"
-	"reflect"
 
 	"github.com/edwingeng/live/internal"
 )
@@ -111,62 +110,6 @@ func (d Data) ToJSONObj(obj interface {
 	}
 }
 
-func (d Data) Marshal() (dAtA []byte, err error) {
-	if d.v == nil {
-		return nil, nil
-	}
-	switch v := d.v.(type) {
-	case *internal.Data:
-		return v.Marshal()
-	default:
-		panic("Marshal does not support type " + reflect.TypeOf(d.v).Name())
-	}
-}
-
-func (d Data) MarshalTo(dAtA []byte) (int, error) {
-	if d.v == nil {
-		return 0, nil
-	}
-	switch v := d.v.(type) {
-	case *internal.Data:
-		return v.MarshalTo(dAtA)
-	default:
-		panic("MarshalTo does not support type " + reflect.TypeOf(d.v).Name())
-	}
-}
-
-func (d Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	if d.v == nil {
-		return 0, nil
-	}
-	switch v := d.v.(type) {
-	case *internal.Data:
-		return v.MarshalToSizedBuffer(dAtA)
-	default:
-		panic("MarshalToSizedBuffer does not support type " + reflect.TypeOf(d.v).Name())
-	}
-}
-
-func (d Data) Size() (n int) {
-	if d.v == nil {
-		return 0
-	}
-	switch v := d.v.(type) {
-	case *internal.Data:
-		return v.Size()
-	default:
-		panic("Size does not support type " + reflect.TypeOf(d.v).Name())
-	}
-}
-
-func (d Data) MarshalJSON() ([]byte, error) {
-	if d.v == nil {
-		return nil, nil
-	}
-	switch v := d.v.(type) {
-	case *internal.Data:
-		return v.MarshalJSON()
-	default:
-		panic("MarshalJSON does not support type " + reflect.TypeOf(d.v).Name())
-	}
+func (d Data) Persistent() Persistent {
+	return Persistent(d)
 }
