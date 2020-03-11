@@ -100,6 +100,9 @@ func (d Data) ToProtobufObj(obj interface {
 }
 
 func (d Data) ToJSONObj(obj interface{}) {
+	if d.v == nil {
+		return
+	}
 	if len(d.v.(*internal.Data).X) == 0 {
 		return
 	}
