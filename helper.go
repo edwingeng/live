@@ -275,6 +275,11 @@ func (h Helper) checkType(t reflect.Type) {
 		}
 		for i := 0; i < t.NumField(); i++ {
 			f := t.Field(i)
+			if live, ok := f.Tag.Lookup("live"); ok {
+				if live == "true" || live == "1" {
+					continue
+				}
+			}
 			h.checkType(f.Type)
 		}
 	case reflect.UnsafePointer:

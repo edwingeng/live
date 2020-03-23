@@ -477,6 +477,22 @@ func TestFunc(t *testing.T) {
 	}()
 }
 
+type printer interface {
+	Print()
+}
+
+type myPrinter struct{}
+
+func (_ myPrinter) Print() {}
+
+type myPrinterWrapper1 struct {
+	p printer
+}
+
+type myPrinterWrapper2 struct {
+	p printer `live:"true"`
+}
+
 func TestInterface(t *testing.T) {
 	h := NewHelper(nil, nil)
 	var v interface{} = 100
@@ -490,16 +506,21 @@ func TestInterface(t *testing.T) {
 		t.Fatal("h.WrapValue([]byte(nil)).V() == nil")
 	}
 
-	type printer interface {
-		Print()
+	var w1 myPrinterWrapper1
+	w1.p = myPrinter{}
+	func() {
+		defer func() {
+			_ = recover()
+		}()
+		h.WrapValue(&w1)
+		t.Fatal("WrapValue should panic")
+	}()
+
+	var w2 myPrinterWrapper2
+	w2.p = myPrinter{}
+	if h.WrapValue(&w2).V() != &w2 {
+		t.Fatal("h.WrapValue(&w2).V() != &w2")
 	}
-	f := func(p printer) {
-		if h.WrapValue(p).V() != nil {
-			t.Fatal("h.WrapValue(p).V() != nil")
-		}
-	}
-	var p printer
-	f(p)
 }
 
 func TestMap(t *testing.T) {
