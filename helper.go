@@ -19,6 +19,10 @@ type Helper struct {
 	Blacklist []string
 }
 
+var (
+	liveDataType = reflect.TypeOf(Nil)
+)
+
 func NewHelper(whitelist, blacklist []string) Helper {
 	return Helper{
 		Whitelist: whitelist,
@@ -280,7 +284,9 @@ func (h Helper) checkType(t reflect.Type) {
 					continue
 				}
 			}
-			h.checkType(f.Type)
+			if f.Type != liveDataType {
+				h.checkType(f.Type)
+			}
 		}
 	case reflect.UnsafePointer:
 		panic("live data does not support unsafe pointer")

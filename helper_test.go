@@ -477,6 +477,23 @@ func TestFunc(t *testing.T) {
 	}()
 }
 
+func TestEmbedded(t *testing.T) {
+	h := NewHelper(nil, nil)
+	defer func() {
+		defer func() {
+			_ = recover()
+		}()
+		h.WrapValue(h.WrapInt(1))
+		t.Fatal("h.WrapValue(h.WrapInt(1)) should panic")
+	}()
+
+	type Super struct {
+		d Data
+	}
+	var super Super
+	h.WrapValue(super)
+}
+
 type printer interface {
 	Print()
 }
