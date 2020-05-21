@@ -221,6 +221,10 @@ func (h Helper) WrapValue(v interface{}) Data {
 }
 
 func (h Helper) checkType(t reflect.Type) {
+	if t == liveDataType {
+		return
+	}
+
 	switch t.Kind() {
 	case reflect.Bool:
 	case reflect.Int:
@@ -284,9 +288,7 @@ func (h Helper) checkType(t reflect.Type) {
 					continue
 				}
 			}
-			if f.Type != liveDataType {
-				h.checkType(f.Type)
-			}
+			h.checkType(f.Type)
 		}
 	case reflect.UnsafePointer:
 		panic("live data does not support unsafe pointer")

@@ -479,13 +479,10 @@ func TestFunc(t *testing.T) {
 
 func TestEmbedded(t *testing.T) {
 	h := NewHelper(nil, nil)
-	defer func() {
-		defer func() {
-			_ = recover()
-		}()
-		h.WrapValue(h.WrapInt(1))
-		t.Fatal("h.WrapValue(h.WrapInt(1)) should panic")
-	}()
+	d := h.WrapValue(h.WrapInt(1))
+	if d.V().(Data).ToInt() != 1 {
+		t.Fatal("d.V().(Data).ToInt() != 1")
+	}
 
 	type Super struct {
 		d Data
