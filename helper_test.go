@@ -623,17 +623,22 @@ func TestSlice(t *testing.T) {
 	}()
 }
 
+type omega struct {
+	A int
+	B string
+	C struct {
+		D int8
+		E bool
+	}
+}
+
+func (o *omega) SetA(a int) {
+	o.A = a
+}
+
 func TestStruct(t *testing.T) {
 	h := NewHelper(nil, nil)
-	type w struct {
-		A int
-		B string
-		C struct {
-			D int8
-			E bool
-		}
-	}
-	v := w{
+	v := omega{
 		A: 100,
 		B: "hello",
 		C: struct {
@@ -641,10 +646,11 @@ func TestStruct(t *testing.T) {
 			E bool
 		}{D: 1, E: true},
 	}
+	v.SetA(200)
 
 	d := h.WrapValue(v)
 	switch u := d.V().(type) {
-	case w:
+	case omega:
 		if u != v {
 			t.Fatal("u != v")
 		}
@@ -667,15 +673,12 @@ func TestStruct(t *testing.T) {
 
 func TestWhitelist(t *testing.T) {
 	h := NewHelper([]string{"github.com/edwingeng/live/internal"}, nil)
-	v := &internal.Data{
-		N: 100,
+	v := &internal.Scaffold{
+		F: func() {},
 	}
 	d := h.WrapValue(v)
-	switch u := d.V().(type) {
-	case *internal.Data:
-		if u != v {
-			t.Fatal("u != v")
-		}
+	switch d.V().(type) {
+	case *internal.Scaffold:
 	default:
 		t.Fatal("unexpected data type")
 	}
@@ -686,6 +689,18 @@ func TestWhitelist(t *testing.T) {
 		}()
 		h := NewHelper([]string{"github.com"}, nil)
 		var v internal.Data
+		h.WrapValue(v)
+		t.Fatal("h.WrapValue() should panic")
+	}()
+
+	func() {
+		defer func() {
+			_ = recover()
+		}()
+		h := NewHelper(nil, nil)
+		v := &internal.Scaffold{
+			F: func() {},
+		}
 		h.WrapValue(v)
 		t.Fatal("h.WrapValue() should panic")
 	}()
@@ -715,6 +730,14 @@ func TestBlacklist(t *testing.T) {
 	func() {
 		h := NewHelper(nil, []string{"github.com/edwin"})
 		var v internal.Data
+		h.WrapValue(v)
+	}()
+
+	func() {
+		h := NewHelper(nil, []string{"github.com/edwin"})
+		v := &internal.Scaffold{
+			F: func() {},
+		}
 		h.WrapValue(v)
 	}()
 }
