@@ -1,6 +1,7 @@
 package live
 
 import (
+	"encoding/json"
 	"reflect"
 
 	"github.com/edwingeng/live/internal"
@@ -60,10 +61,5 @@ func (p Persistent) MarshalJSON() ([]byte, error) {
 	if p.v == nil {
 		return nil, nil
 	}
-	switch v := p.v.(type) {
-	case *internal.Data:
-		return v.MarshalJSON()
-	default:
-		panic("MarshalJSON does not support type " + reflect.TypeOf(p.v).Name())
-	}
+	return json.Marshal(p.v)
 }
