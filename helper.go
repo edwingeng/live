@@ -24,10 +24,18 @@ var (
 )
 
 func NewHelper(whitelist, blacklist []string) Helper {
-	return Helper{
-		Whitelist: whitelist,
-		Blacklist: blacklist,
+	var h Helper
+	for _, v := range whitelist {
+		if v := strings.TrimRight(v, `/`); v != "" {
+			h.Whitelist = append(h.Whitelist, v)
+		}
 	}
+	for _, v := range blacklist {
+		if v := strings.TrimRight(v, `/`); v != "" {
+			h.Blacklist = append(h.Blacklist, v)
+		}
+	}
+	return h
 }
 
 func (h Helper) WrapBool(v bool) Data {
