@@ -9,7 +9,7 @@ import (
 )
 
 func TestBool(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []bool{true, false}
 	for _, v := range a {
 		d := h.WrapBool(v)
@@ -32,7 +32,7 @@ func TestBool(t *testing.T) {
 }
 
 func TestInt(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []int{-1, 0, 1, 10, 1000}
 	for _, v := range a {
 		d := h.WrapInt(v)
@@ -55,7 +55,7 @@ func TestInt(t *testing.T) {
 }
 
 func TestInt8(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []int8{math.MinInt8, -1, 0, 1, 10, math.MaxInt8}
 	for _, v := range a {
 		d := h.WrapInt8(v)
@@ -78,7 +78,7 @@ func TestInt8(t *testing.T) {
 }
 
 func TestInt16(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []int16{math.MinInt16, -1, 0, 1, 10, math.MaxInt16}
 	for _, v := range a {
 		d := h.WrapInt16(v)
@@ -101,7 +101,7 @@ func TestInt16(t *testing.T) {
 }
 
 func TestInt32(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []int32{math.MinInt32, -1, 0, 1, 10, math.MaxInt32}
 	for _, v := range a {
 		d := h.WrapInt32(v)
@@ -124,7 +124,7 @@ func TestInt32(t *testing.T) {
 }
 
 func TestInt64(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []int64{math.MinInt64, -1, 0, 1, 10, math.MaxInt64}
 	for _, v := range a {
 		d := h.WrapInt64(v)
@@ -147,7 +147,7 @@ func TestInt64(t *testing.T) {
 }
 
 func TestUint(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint{0, 1, 10, 1000}
 	for _, v := range a {
 		d := h.WrapUint(v)
@@ -170,7 +170,7 @@ func TestUint(t *testing.T) {
 }
 
 func TestUint8(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint8{0, 1, 10, math.MaxUint8}
 	for _, v := range a {
 		d := h.WrapUint8(v)
@@ -193,7 +193,7 @@ func TestUint8(t *testing.T) {
 }
 
 func TestUint16(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint16{0, 1, 10, math.MaxUint16}
 	for _, v := range a {
 		d := h.WrapUint16(v)
@@ -216,7 +216,7 @@ func TestUint16(t *testing.T) {
 }
 
 func TestUint32(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint32{0, 1, 10, math.MaxUint32}
 	for _, v := range a {
 		d := h.WrapUint32(v)
@@ -239,7 +239,7 @@ func TestUint32(t *testing.T) {
 }
 
 func TestUint64(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint64{0, 1, 10, math.MaxUint64}
 	for _, v := range a {
 		d := h.WrapUint64(v)
@@ -262,7 +262,7 @@ func TestUint64(t *testing.T) {
 }
 
 func TestUintptr(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uintptr{0, 1, 10, 1000}
 	for _, v := range a {
 		d := h.WrapValue(v)
@@ -278,7 +278,7 @@ func TestUintptr(t *testing.T) {
 }
 
 func TestFloat32(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []float32{-9.9, -1, 0, 1, 10, 1000.28}
 	for _, v := range a {
 		d := h.WrapFloat32(v)
@@ -301,7 +301,7 @@ func TestFloat32(t *testing.T) {
 }
 
 func TestFloat64(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []float64{-9.9, -1, 0, 1, 10, 1000.28}
 	for _, v := range a {
 		d := h.WrapFloat64(v)
@@ -324,7 +324,7 @@ func TestFloat64(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []string{"", "hello", "it is a good day to die"}
 	for _, v := range a {
 		d := h.WrapString(v)
@@ -347,7 +347,7 @@ func TestString(t *testing.T) {
 }
 
 func TestBytes(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := [][]byte{[]byte(""), []byte("hello"), []byte("it is a good day to die")}
 	for _, v := range a {
 		d := h.WrapBytes(v)
@@ -368,7 +368,7 @@ func TestBytes(t *testing.T) {
 }
 
 func TestComplex64(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []complex64{
 		complex(0, 0.5),
 		complex(1, 1.5),
@@ -390,7 +390,7 @@ func TestComplex64(t *testing.T) {
 }
 
 func TestComplex128(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []complex128{
 		complex(0, 0.5),
 		complex(1, 1.5),
@@ -412,7 +412,7 @@ func TestComplex128(t *testing.T) {
 }
 
 func TestArray(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
 	a := [3]*uint64{&n1, &n2, &n3}
 	d := h.WrapValue(a)
@@ -442,7 +442,7 @@ func TestArray(t *testing.T) {
 }
 
 func TestChan(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	a := []uint64{0, 1, math.MaxUint64}
 	type w struct {
 		n uint64
@@ -467,7 +467,7 @@ func TestChan(t *testing.T) {
 }
 
 func TestFunc(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	func() {
 		defer func() {
 			_ = recover()
@@ -478,7 +478,7 @@ func TestFunc(t *testing.T) {
 }
 
 func TestEmbedded(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	d := h.WrapValue(h.WrapInt(1))
 	if d.V().(Data).ToInt() != 1 {
 		t.Fatal("d.V().(Data).ToInt() != 1")
@@ -508,7 +508,7 @@ type myPrinterWrapper2 struct {
 }
 
 func TestInterface(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	var v interface{} = 100
 	h.WrapValue(v)
 
@@ -538,7 +538,7 @@ func TestInterface(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	m := map[int]string{
 		1: "10",
 		2: "20",
@@ -570,7 +570,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestPointer(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	n := 100
 	p := &n
 	d := h.WrapValue(&p)
@@ -594,7 +594,7 @@ func TestPointer(t *testing.T) {
 }
 
 func TestSlice(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
 	a := []*uint64{&n1, &n2, &n3}
 	d := h.WrapValue(a)
@@ -637,7 +637,7 @@ func (o *omega) SetA(a int) {
 }
 
 func TestStruct(t *testing.T) {
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	v := omega{
 		A: 100,
 		B: "hello",
@@ -671,47 +671,12 @@ func TestStruct(t *testing.T) {
 	}()
 }
 
-func TestWhitelist(t *testing.T) {
-	h := NewHelper([]string{"github.com/edwingeng/live/internal"}, nil)
-	v := &internal.Scaffold{
-		F: func() {},
-	}
-	d := h.WrapValue(v)
-	switch d.V().(type) {
-	case *internal.Scaffold:
-	default:
-		t.Fatal("unexpected data type")
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h := NewHelper([]string{"github.com"}, nil)
-		var v internal.Data
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h := NewHelper(nil, nil)
-		v := &internal.Scaffold{
-			F: func() {},
-		}
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-}
-
 func TestBlacklist(t *testing.T) {
 	func() {
 		defer func() {
 			_ = recover()
 		}()
-		h := NewHelper(nil, []string{"github.com/edwingeng/live/internal"})
+		h := NewHelper([]string{"github.com/edwingeng/live/internal"})
 		var v internal.Data
 		h.WrapValue(v)
 		t.Fatal("h.WrapValue() should panic")
@@ -721,54 +686,16 @@ func TestBlacklist(t *testing.T) {
 		defer func() {
 			_ = recover()
 		}()
-		h := NewHelper(nil, []string{"github.com/edwingeng/live"})
+		h := NewHelper([]string{"github.com/edwingeng/live"})
 		var v internal.Data
 		h.WrapValue(v)
 		t.Fatal("h.WrapValue() should panic")
 	}()
 
 	func() {
-		h := NewHelper(nil, []string{"github.com/edwin"})
+		h := NewHelper([]string{"github.com/edwin"})
 		var v internal.Data
 		h.WrapValue(v)
-	}()
-
-	func() {
-		h := NewHelper(nil, []string{"github.com/edwin"})
-		v := &internal.Scaffold{
-			F: func() {},
-		}
-		h.WrapValue(v)
-	}()
-}
-
-func TestPriority(t *testing.T) {
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h := NewHelper(nil, []string{"github.com/edwingeng/live"})
-		v := &internal.Data{
-			N: 100,
-		}
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-
-	func() {
-		h := NewHelper([]string{"github.com/edwingeng/live/internal"}, []string{"github.com/edwingeng/live"})
-		v := &internal.Data{
-			N: 100,
-		}
-		d := h.WrapValue(v)
-		switch u := d.V().(type) {
-		case *internal.Data:
-			if u != v {
-				t.Fatal("u != v")
-			}
-		default:
-			t.Fatal("unexpected data type")
-		}
 	}()
 }
 
@@ -780,7 +707,7 @@ func TestJSON(t *testing.T) {
 	obj1.A = 100
 	obj2.B = "hello"
 
-	h := NewHelper(nil, nil)
+	h := NewHelper(nil)
 	h.WrapJSONObj(&obj1).ToJSONObj(&obj2)
 	if obj2 != obj1 {
 		t.Fatal("obj2 != obj1")

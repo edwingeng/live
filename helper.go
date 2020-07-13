@@ -15,21 +15,28 @@ var (
 )
 
 type Helper struct {
-	Whitelist []string
-	Blacklist []string
+	Blacklist blacklist
 }
 
 var (
 	liveDataType = reflect.TypeOf(Nil)
 )
 
-func NewHelper(whitelist, blacklist []string) Helper {
-	var h Helper
-	for _, v := range whitelist {
-		if v := strings.TrimRight(v, `/`); v != "" {
-			h.Whitelist = append(h.Whitelist, v)
+type blacklist []string
+
+func (bl blacklist) covers(pkgPath string) bool {
+	for _, x := range bl {
+		if strings.HasPrefix(pkgPath, x) {
+			if n := len(x); pkgPath[n] == '/' {
+				return true
+			}
 		}
 	}
+	return false
+}
+
+func NewHelper(blacklist []string) Helper {
+	var h Helper
 	for _, v := range blacklist {
 		if v := strings.TrimRight(v, `/`); v != "" {
 			h.Blacklist = append(h.Blacklist, v)
@@ -268,23 +275,10 @@ func (h Helper) checkType(t reflect.Type) {
 	case reflect.String:
 	case reflect.Struct:
 		pkgPath := t.PkgPath()
-		if len(h.Whitelist) > 0 {
-			for _, x := range h.Whitelist {
-				if x == pkgPath {
-					return
-				}
+		if len(h.Blacklist) > 0 {
+			if h.Blacklist.covers(pkgPath) {
+				panic(pkgPath + " is in the blacklist of live.Helper")
 			}
-			panic(pkgPath + " is NOT in the whitelist of live.Helper")
-
-		} else if len(h.Blacklist) > 0 {
-			for _, x := range h.Blacklist {
-				if strings.HasPrefix(pkgPath, x) {
-					if n := len(x); n == len(pkgPath) || pkgPath[n] == '/' {
-						panic(pkgPath + " is in the blacklist of live.Helper")
-					}
-				}
-			}
-			return
 		}
 
 		for i := 0; i < t.NumField(); i++ {
