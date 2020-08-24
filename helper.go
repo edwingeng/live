@@ -224,6 +224,10 @@ func (h Helper) FromJSONBytes(v []byte) Data {
 	return Data{v: &d}
 }
 
+func (h Helper) FromInternalBytes(v []byte) Data {
+	return Data{v: &internal.Data{X: v}}
+}
+
 func (h Helper) WrapValue(v interface{}) Data {
 	if v == nil {
 		return Data{}

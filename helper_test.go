@@ -713,3 +713,17 @@ func TestJSON(t *testing.T) {
 		t.Fatal("obj2 != obj1")
 	}
 }
+
+func TestHelper_FromInternalBytes(t *testing.T) {
+	h := NewHelper(nil)
+	d := h.WrapUint64(0xFFFFFFFFFFFFFFFF)
+	internalBytes, ok := d.Persistent().PeekInternalBytes()
+	if !ok {
+		t.Fatal("PeekInternalBytes does not work")
+	}
+
+	newData := h.FromInternalBytes(internalBytes)
+	if newData.ToUint64() != 0xFFFFFFFFFFFFFFFF {
+		t.Fatal("newData.ToUint64() != 0xFFFFFFFFFFFFFFFF")
+	}
+}

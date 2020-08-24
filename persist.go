@@ -3,6 +3,8 @@ package live
 import (
 	"encoding/json"
 	"reflect"
+
+	"github.com/edwingeng/live/internal"
 )
 
 type Persistent Data
@@ -64,4 +66,11 @@ func (p Persistent) MarshalJSON() ([]byte, error) {
 		return nil, nil
 	}
 	return json.Marshal(p.v)
+}
+
+func (p Persistent) PeekInternalBytes() ([]byte, bool) {
+	if d, ok := p.v.(*internal.Data); ok && d.N == 0 {
+		return d.X, true
+	}
+	return nil, false
 }
