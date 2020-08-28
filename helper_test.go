@@ -717,7 +717,8 @@ func TestJSON(t *testing.T) {
 func TestHelper_FromInternalBytes(t *testing.T) {
 	h := NewHelper(nil)
 	d := h.WrapUint64(0xFFFFFFFFFFFFFFFF)
-	internalBytes, ok := d.Persistent().PeekInternalBytes()
+	p, _ := d.Persistent()
+	internalBytes, ok := p.PeekInternalBytes()
 	if !ok {
 		t.Fatal("PeekInternalBytes does not work")
 	}

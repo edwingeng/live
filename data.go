@@ -122,6 +122,13 @@ func (d Data) ToJSONObj(obj interface{}) {
 	}
 }
 
-func (d Data) Persistent() Persistent {
-	return Persistent(d)
+func (d Data) Persistent() (Persistent, bool) {
+	x, ok := d.v.(*internal.Data)
+	if ok {
+		return Persistent{
+			d: *x,
+		}, true
+	}
+
+	return Persistent{}, false
 }

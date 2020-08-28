@@ -1,76 +1,36 @@
 package live
 
 import (
-	"encoding/json"
-	"reflect"
-
 	"github.com/edwingeng/live/internal"
 )
 
-type Persistent Data
+type Persistent struct {
+	d internal.Data
+}
 
 func (p Persistent) Marshal() (dAtA []byte, err error) {
-	if p.v == nil {
-		return nil, nil
-	}
-	data, ok := p.v.(interface {
-		Marshal() (dAtA []byte, err error)
-	})
-	if !ok {
-		panic("Marshal does not support type " + reflect.TypeOf(p.v).Name())
-	}
-	return data.Marshal()
+	return p.d.Marshal()
 }
 
 func (p Persistent) MarshalTo(dAtA []byte) (int, error) {
-	if p.v == nil {
-		return 0, nil
-	}
-	data, ok := p.v.(interface {
-		MarshalTo(dAtA []byte) (int, error)
-	})
-	if !ok {
-		panic("MarshalTo does not support type " + reflect.TypeOf(p.v).Name())
-	}
-	return data.MarshalTo(dAtA)
+	return p.d.MarshalTo(dAtA)
 }
 
 func (p Persistent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	if p.v == nil {
-		return 0, nil
-	}
-	data, ok := p.v.(interface {
-		MarshalToSizedBuffer(dAtA []byte) (int, error)
-	})
-	if !ok {
-		panic("MarshalToSizedBuffer does not support type " + reflect.TypeOf(p.v).Name())
-	}
-	return data.MarshalToSizedBuffer(dAtA)
+	return p.d.MarshalToSizedBuffer(dAtA)
 }
 
 func (p Persistent) Size() (n int) {
-	if p.v == nil {
-		return 0
-	}
-	data, ok := p.v.(interface {
-		Size() (n int)
-	})
-	if !ok {
-		panic("Size does not support type " + reflect.TypeOf(p.v).Name())
-	}
-	return data.Size()
+	return p.d.Size()
 }
 
 func (p Persistent) MarshalJSON() ([]byte, error) {
-	if p.v == nil {
-		return nil, nil
-	}
-	return json.Marshal(p.v)
+	return p.d.MarshalJSON()
 }
 
 func (p Persistent) PeekInternalBytes() ([]byte, bool) {
-	if d, ok := p.v.(*internal.Data); ok && d.N == 0 {
-		return d.X, true
+	if p.d.N == 0 {
+		return p.d.X, true
 	}
 	return nil, false
 }
