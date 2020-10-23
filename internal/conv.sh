@@ -38,7 +38,7 @@ function processProtoFile() {
     protoc -I=. "${@:2}" --gogo_out=paths=source_relative:.
     [[ $? -ne 0 ]] && exit 1
     for arg in "${@:2}"; do
-        easyjson -all -omit_empty "`basename $arg .proto`.pb.go"
+        go run github.com/mailru/easyjson/easyjson -all -omit_empty "`basename $arg .proto`.pb.go"
         [[ $? -ne 0 ]] && exit 1
     done
     cd "$OLD_DIR"
