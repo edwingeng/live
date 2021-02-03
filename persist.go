@@ -2,6 +2,8 @@ package live
 
 import (
 	"github.com/edwingeng/live/internal"
+	"github.com/mailru/easyjson/jlexer"
+	"github.com/mailru/easyjson/jwriter"
 )
 
 type Persistent struct {
@@ -24,8 +26,24 @@ func (p Persistent) Size() (n int) {
 	return p.d.Size()
 }
 
+func (this *Persistent) Unmarshal(dAtA []byte) error {
+	return this.d.Unmarshal(dAtA)
+}
+
 func (p Persistent) MarshalJSON() ([]byte, error) {
 	return p.d.MarshalJSON()
+}
+
+func (p Persistent) MarshalEasyJSON(w *jwriter.Writer) {
+	p.d.MarshalEasyJSON(w)
+}
+
+func (this *Persistent) UnmarshalJSON(dAtA []byte) error {
+	return this.d.UnmarshalJSON(dAtA)
+}
+
+func (this *Persistent) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	this.d.UnmarshalEasyJSON(l)
 }
 
 func (p Persistent) PeekInternalBytes() ([]byte, bool) {
