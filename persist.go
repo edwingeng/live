@@ -34,3 +34,7 @@ func (p Persistent) PeekInternalBytes() ([]byte, bool) {
 	}
 	return nil, false
 }
+
+func (p Persistent) Data() Data {
+	return Data{v: &p.d}
+}

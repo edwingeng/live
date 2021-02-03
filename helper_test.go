@@ -3,6 +3,7 @@ package live
 import (
 	"bytes"
 	"math"
+	"reflect"
 	"testing"
 
 	"github.com/edwingeng/live/internal"
@@ -726,5 +727,9 @@ func TestHelper_FromInternalBytes(t *testing.T) {
 	newData := h.FromInternalBytes(internalBytes)
 	if newData.ToUint64() != 0xFFFFFFFFFFFFFFFF {
 		t.Fatal("newData.ToUint64() != 0xFFFFFFFFFFFFFFFF")
+	}
+
+	if !reflect.DeepEqual(d, p.Data()) {
+		t.Fatal("!reflect.DeepEqual(d, p.Data())")
 	}
 }
