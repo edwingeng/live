@@ -27,7 +27,7 @@ type blacklist []string
 func (bl blacklist) covers(pkgPath string) bool {
 	for _, x := range bl {
 		if strings.HasPrefix(pkgPath, x) {
-			if n := len(x); pkgPath[n] == '/' {
+			if n := len(x); n == len(pkgPath) || pkgPath[n] == '/' {
 				return true
 			}
 		}
@@ -35,9 +35,9 @@ func (bl blacklist) covers(pkgPath string) bool {
 	return false
 }
 
-func NewHelper(blacklist []string) Helper {
+func NewHelper(pkgBlacklist []string) Helper {
 	var h Helper
-	for _, v := range blacklist {
+	for _, v := range pkgBlacklist {
 		if v := strings.TrimRight(v, `/`); v != "" {
 			h.Blacklist = append(h.Blacklist, v)
 		}

@@ -9,6 +9,32 @@ import (
 	"github.com/edwingeng/live/internal"
 )
 
+func TestBlacklist_covers(t *testing.T) {
+	var bl blacklist = []string{
+		"a/b/c",
+		"a/x",
+	}
+
+	data := map[string]bool{
+		"a/b/c":     true,
+		"a/b":       false,
+		"a/b/c/d":   true,
+		"a/b/c/d/e": true,
+		"a/x":       true,
+		"a":         false,
+		"a/x/y":     true,
+		"a/x/y/z":   true,
+		"h":         false,
+		"h/i":       false,
+	}
+
+	for pkg, expected := range data {
+		if bl.covers(pkg) != expected {
+			t.Fatalf("bl.covers(pkg) != expected. pkg: %s, expected: %v", pkg, expected)
+		}
+	}
+}
+
 func TestBool(t *testing.T) {
 	h := NewHelper(nil)
 	a := []bool{true, false}
