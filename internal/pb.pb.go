@@ -98,9 +98,6 @@ func (m *Data) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	if m == nil {
-		return 0, nil
-	}
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -241,10 +238,7 @@ func (m *Data) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthPb
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthPb
 			}
 			if (iNdEx + skippy) > l {
