@@ -26,8 +26,8 @@ func (p Persistent) Size() (n int) {
 	return p.d.Size()
 }
 
-func (this *Persistent) Unmarshal(dAtA []byte) error {
-	return this.d.Unmarshal(dAtA)
+func (p *Persistent) Unmarshal(dAtA []byte) error {
+	return p.d.Unmarshal(dAtA)
 }
 
 func (p Persistent) MarshalJSON() ([]byte, error) {
@@ -38,12 +38,12 @@ func (p Persistent) MarshalEasyJSON(w *jwriter.Writer) {
 	p.d.MarshalEasyJSON(w)
 }
 
-func (this *Persistent) UnmarshalJSON(dAtA []byte) error {
-	return this.d.UnmarshalJSON(dAtA)
+func (p *Persistent) UnmarshalJSON(dAtA []byte) error {
+	return p.d.UnmarshalJSON(dAtA)
 }
 
-func (this *Persistent) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	this.d.UnmarshalEasyJSON(l)
+func (p *Persistent) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	p.d.UnmarshalEasyJSON(l)
 }
 
 func (p Persistent) PeekInternalBytes() ([]byte, bool) {

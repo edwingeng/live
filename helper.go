@@ -239,6 +239,7 @@ func (h Helper) WrapValue(v interface{}) Data {
 	return Data{v: v}
 }
 
+//gocyclo:ignore
 func (h Helper) checkType(t reflect.Type) {
 	if t == liveDataType {
 		return
