@@ -10,10 +10,6 @@ import (
 	"github.com/edwingeng/live/internal"
 )
 
-var (
-	UnsafeMode bool
-)
-
 type Helper struct {
 	Blacklist blacklist
 }
@@ -230,12 +226,16 @@ func (h Helper) FromInternalBytes(v []byte) Data {
 
 func (h Helper) WrapValue(v interface{}) Data {
 	if v == nil {
-		return Data{}
-	}
-	if UnsafeMode {
-		return Data{v: v}
+		return Nil
 	}
 	h.checkType(reflect.TypeOf(v))
+	return Data{v: v}
+}
+
+func (h Helper) WrapValueWithoutTypeCheck(v interface{}) Data {
+	if v == nil {
+		return Nil
+	}
 	return Data{v: v}
 }
 
