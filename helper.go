@@ -3,320 +3,154 @@ package live
 import (
 	"encoding/binary"
 	"encoding/json"
-	"math"
-	"reflect"
-	"strings"
-
 	"github.com/edwingeng/live/internal"
+	"math"
 )
-
-type Helper struct {
-	Blacklist blacklist
-}
 
 var (
-	liveDataType = reflect.TypeOf(Nil)
+	liveZero = Data{&internal.Data{}}
+	liveNum1 = Data{&internal.Data{N: 1}}
 )
 
-type blacklist []string
-
-func (bl blacklist) covers(pkgPath string) bool {
-	for _, x := range bl {
-		if strings.HasPrefix(pkgPath, x) {
-			if n := len(x); n == len(pkgPath) || pkgPath[n] == '/' {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func NewHelper(pkgBlacklist []string) Helper {
-	var h Helper
-	for _, v := range pkgBlacklist {
-		if v := strings.TrimRight(v, `/`); v != "" {
-			h.Blacklist = append(h.Blacklist, v)
-		}
-	}
-	return h
-}
-
-func (h Helper) WrapBool(v bool) Data {
-	if v {
-		return Data{v: &internal.Data{
-			N: 1,
-		}}
+func WrapBool(v bool) Data {
+	if !v {
+		return liveZero
 	} else {
-		return Data{v: &internal.Data{
-			N: 0,
-		}}
+		return liveNum1
 	}
 }
 
-func (h Helper) WrapInt(v int) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
-}
-
-func (h Helper) WrapInt8(v int8) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
-}
-
-func (h Helper) WrapInt16(v int16) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
-}
-
-func (h Helper) WrapInt32(v int32) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
-}
-
-func (h Helper) WrapInt64(v int64) Data {
-	return Data{v: &internal.Data{
-		N: v,
-	}}
-}
-
-func (h Helper) WrapUint(v uint) Data {
+func wrapInteger(v int64) Data {
 	switch v {
 	case 0:
-		return Data{v: &internal.Data{}}
+		return liveZero
+	case 1:
+		return liveNum1
 	default:
-		var buf [10]byte
-		n := binary.PutUvarint(buf[:], uint64(v))
-		return Data{v: &internal.Data{
-			X: buf[:n],
-		}}
+		return Data{&internal.Data{N: v}}
 	}
 }
 
-func (h Helper) WrapUint8(v uint8) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
+func WrapInt(v int) Data {
+	return wrapInteger(int64(v))
 }
 
-func (h Helper) WrapUint16(v uint16) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
+func WrapInt8(v int8) Data {
+	return wrapInteger(int64(v))
 }
 
-func (h Helper) WrapUint32(v uint32) Data {
-	return Data{v: &internal.Data{
-		N: int64(v),
-	}}
+func WrapInt16(v int16) Data {
+	return wrapInteger(int64(v))
 }
 
-func (h Helper) WrapUint64(v uint64) Data {
-	switch v {
-	case 0:
-		return Data{v: &internal.Data{}}
-	default:
-		var buf [10]byte
-		n := binary.PutUvarint(buf[:], v)
-		return Data{v: &internal.Data{
-			X: buf[:n],
-		}}
+func WrapInt32(v int32) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapInt64(v int64) Data {
+	return wrapInteger(v)
+}
+
+func WrapUint(v uint) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapUint8(v uint8) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapUint16(v uint16) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapUint32(v uint32) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapUint64(v uint64) Data {
+	return wrapInteger(int64(v))
+}
+
+func WrapFloat32(v float32) Data {
+	return wrapInteger(int64(math.Float32bits(v)))
+}
+
+func WrapFloat64(v float64) Data {
+	return wrapInteger(int64(math.Float64bits(v)))
+}
+
+func WrapString(v string) Data {
+	return Data{&internal.Data{X: []byte(v)}}
+}
+
+func WrapBytes(v []byte) Data {
+	return Data{&internal.Data{X: v}}
+}
+
+func WrapComplex64(v complex64) Data {
+	buf := make([]byte, 8, 8)
+	binary.LittleEndian.PutUint32(buf[:4], math.Float32bits(real(v)))
+	binary.LittleEndian.PutUint32(buf[4:], math.Float32bits(imag(v)))
+	return Data{&internal.Data{X: buf}}
+}
+
+func WrapComplex128(v complex128) Data {
+	buf := make([]byte, 16, 16)
+	binary.LittleEndian.PutUint64(buf[:8], math.Float64bits(real(v)))
+	binary.LittleEndian.PutUint64(buf[8:], math.Float64bits(imag(v)))
+	return Data{&internal.Data{X: buf}}
+}
+
+func wrapObjectImpl(x json.Marshaler) Data {
+	if x == nil {
+		return liveZero
 	}
-}
 
-func (h Helper) WrapFloat32(v float32) Data {
-	b := math.Float32bits(v)
-	return Data{v: &internal.Data{
-		N: int64(b),
-	}}
-}
-
-func (h Helper) WrapFloat64(v float64) Data {
-	b := math.Float64bits(v)
-	var buf [10]byte
-	n := binary.PutUvarint(buf[:], b)
-	return Data{v: &internal.Data{
-		X: buf[:n],
-	}}
-}
-
-func (h Helper) WrapString(v string) Data {
-	return Data{v: &internal.Data{
-		X: []byte(v),
-	}}
-}
-
-func (h Helper) WrapBytes(v []byte) Data {
-	return Data{v: &internal.Data{
-		X: v,
-	}}
-}
-
-func (h Helper) WrapProtobufObj(v interface{}) Data {
-	x, ok := v.(interface {
-		Marshal() ([]byte, error)
-		Unmarshal([]byte) error
-	})
-	if !ok {
-		panic("v is not protobuf compatible")
-	}
-	if x != nil {
-		bts, err := x.Marshal()
-		if err != nil {
-			panic(err)
-		}
-		return Data{v: &internal.Data{
-			X: bts,
-		}}
-	} else {
-		return Data{v: &internal.Data{}}
-	}
-}
-
-func (h Helper) WrapJSONObj(v interface{}) Data {
-	x, ok := v.(interface {
-		MarshalJSON() ([]byte, error)
-		UnmarshalJSON([]byte) error
-	})
-	if ok {
-		if x != nil {
-			bts, err := x.MarshalJSON()
-			if err != nil {
-				panic(err)
-			}
-			return Data{v: &internal.Data{
-				X: bts,
-			}}
-		} else {
-			return Data{v: &internal.Data{}}
-		}
-	} else {
-		bts, err := json.Marshal(v)
-		if err != nil {
-			panic(err)
-		}
-		return Data{v: &internal.Data{
-			X: bts,
-		}}
-	}
-}
-
-func (h Helper) FromProtobufBytes(v []byte) Data {
-	var d internal.Data
-	if err := d.Unmarshal(v); err != nil {
+	bts, err := x.MarshalJSON()
+	if err != nil {
 		panic(err)
 	}
-	return Data{v: &d}
+
+	return Data{&internal.Data{X: bts}}
 }
 
-func (h Helper) FromJSONBytes(v []byte) Data {
-	var d internal.Data
-	if err := d.UnmarshalJSON(v); err != nil {
+func WrapObject(obj any) Data {
+	if obj == nil {
+		return liveZero
+	}
+
+	if x, ok := obj.(json.Marshaler); ok {
+		return wrapObjectImpl(x)
+	}
+
+	bts, err := json.Marshal(obj)
+	if err != nil {
 		panic(err)
 	}
-	return Data{v: &d}
+
+	return Data{&internal.Data{X: bts}}
 }
 
-func (h Helper) FromInternalBytes(v []byte) Data {
-	return Data{v: &internal.Data{X: v}}
+type ProtobufMarshaler interface {
+	Marshal() ([]byte, error)
 }
 
-func (h Helper) WrapValue(v interface{}) Data {
-	if v == nil {
-		return Nil
+func WrapProtobufObject(obj ProtobufMarshaler) Data {
+	if obj == nil {
+		return liveZero
 	}
-	h.checkType(reflect.TypeOf(v))
-	return Data{v: v}
+
+	bts, err := obj.Marshal()
+	if err != nil {
+		panic(err)
+	}
+	if len(bts) == 0 {
+		return liveZero
+	}
+
+	return Data{&internal.Data{X: bts}}
 }
 
-func (h Helper) WrapValueWithoutTypeCheck(v interface{}) Data {
-	if v == nil {
-		return Nil
-	}
-	return Data{v: v}
-}
-
-//gocyclo:ignore
-func (h Helper) checkType(t reflect.Type) {
-	if t == liveDataType {
-		return
-	}
-
-	switch t.Kind() {
-	case reflect.Bool:
-	case reflect.Int:
-	case reflect.Int8:
-	case reflect.Int16:
-	case reflect.Int32:
-	case reflect.Int64:
-	case reflect.Uint:
-	case reflect.Uint8:
-	case reflect.Uint16:
-	case reflect.Uint32:
-	case reflect.Uint64:
-	case reflect.Uintptr:
-	case reflect.Float32:
-	case reflect.Float64:
-	case reflect.Complex64:
-	case reflect.Complex128:
-	case reflect.Array:
-		h.checkType(t.Elem())
-	case reflect.Chan:
-		h.checkType(t.Elem())
-	case reflect.Func:
-		panic("live data does not support func")
-	case reflect.Interface:
-		panic("live data does not support interface")
-	case reflect.Map:
-		h.checkMapKeyType(t.Key())
-		h.checkType(t.Elem())
-	case reflect.Ptr:
-		h.checkType(t.Elem())
-	case reflect.Slice:
-		h.checkType(t.Elem())
-	case reflect.String:
-	case reflect.Struct:
-		pkgPath := t.PkgPath()
-		if len(h.Blacklist) > 0 {
-			if h.Blacklist.covers(pkgPath) {
-				panic(pkgPath + " is in the blacklist of live.Helper")
-			}
-		}
-
-		for i := 0; i < t.NumField(); i++ {
-			f := t.Field(i)
-			if live, ok := f.Tag.Lookup("live"); ok {
-				if live == "true" || live == "1" {
-					continue
-				}
-			}
-			h.checkType(f.Type)
-		}
-	case reflect.UnsafePointer:
-		panic("live data does not support unsafe pointer")
-	default:
-		panic("impossible")
-	}
-}
-
-func (h Helper) checkMapKeyType(t reflect.Type) {
-	switch t.Kind() {
-	case reflect.Int:
-	case reflect.Int8:
-	case reflect.Int16:
-	case reflect.Int32:
-	case reflect.Int64:
-	case reflect.Uint:
-	case reflect.Uint8:
-	case reflect.Uint16:
-	case reflect.Uint32:
-	case reflect.Uint64:
-	case reflect.String:
-	case reflect.Uintptr:
-	default:
-		panic("unsupported map key type: " + t.Name())
-	}
+func WrapValueDirect(v any, cfg Config) Data {
+	return cfg.WrapValueDirect(v)
 }

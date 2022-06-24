@@ -3,9 +3,10 @@ package live
 import (
 	"encoding/binary"
 	"encoding/json"
-	"math"
-
 	"github.com/edwingeng/live/internal"
+	"github.com/mailru/easyjson/jlexer"
+	"github.com/mailru/easyjson/jwriter"
+	"math"
 )
 
 var (
@@ -13,100 +14,91 @@ var (
 )
 
 type Data struct {
-	v interface{}
+	v any
 }
 
-func (d Data) ToBool() bool {
+func (d Data) Bool() bool {
 	return d.v.(*internal.Data).N == 1
 }
 
-func (d Data) ToInt() int {
+func (d Data) Int() int {
 	return int(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToInt8() int8 {
+func (d Data) Int8() int8 {
 	return int8(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToInt16() int16 {
+func (d Data) Int16() int16 {
 	return int16(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToInt32() int32 {
+func (d Data) Int32() int32 {
 	return int32(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToInt64() int64 {
+func (d Data) Int64() int64 {
 	return d.v.(*internal.Data).N
 }
 
-func (d Data) ToUint() uint {
-	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
-	return uint(v)
+func (d Data) Uint() uint {
+	return uint(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToUint8() uint8 {
+func (d Data) Uint8() uint8 {
 	return uint8(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToUint16() uint16 {
+func (d Data) Uint16() uint16 {
 	return uint16(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToUint32() uint32 {
+func (d Data) Uint32() uint32 {
 	return uint32(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToUint64() uint64 {
-	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
-	return v
+func (d Data) Uint64() uint64 {
+	return uint64(d.v.(*internal.Data).N)
 }
 
-func (d Data) ToFloat32() float32 {
+func (d Data) Float32() float32 {
 	return math.Float32frombits(uint32(d.v.(*internal.Data).N))
 }
 
-func (d Data) ToFloat64() float64 {
-	v, _ := binary.Uvarint(d.v.(*internal.Data).X)
-	return math.Float64frombits(v)
+func (d Data) Float64() float64 {
+	return math.Float64frombits(uint64(d.v.(*internal.Data).N))
 }
 
-func (d Data) ToString() string {
+func (d Data) String() string {
 	return string(d.v.(*internal.Data).X)
 }
 
-func (d Data) ToBytes() []byte {
-	if d.v != nil {
-		return d.v.(*internal.Data).X
-	} else {
-		return nil
-	}
+func (d Data) Bytes() []byte {
+	return d.v.(*internal.Data).X
 }
 
-func (d Data) V() interface{} {
-	return d.v
+func (d Data) Complex64() complex64 {
+	x := d.v.(*internal.Data).X
+	r := binary.LittleEndian.Uint32(x[:4])
+	i := binary.LittleEndian.Uint32(x[4:])
+	return complex(math.Float32frombits(r), math.Float32frombits(i))
 }
 
-func (d Data) ToProtobufObj(obj interface {
-	Unmarshal([]byte) error
-}) {
-	if len(d.v.(*internal.Data).X) == 0 {
-		return
-	}
-	err := obj.Unmarshal(d.v.(*internal.Data).X)
-	if err != nil {
-		panic(err)
-	}
+func (d Data) Complex128() complex128 {
+	x := d.v.(*internal.Data).X
+	r := binary.LittleEndian.Uint64(x[:8])
+	i := binary.LittleEndian.Uint64(x[8:])
+	return complex(math.Float64frombits(r), math.Float64frombits(i))
 }
 
-func (d Data) ToJSONObj(obj interface{}) {
+func (d Data) UnwrapObject(out any) {
 	if d.v == nil {
 		return
 	}
 	if len(d.v.(*internal.Data).X) == 0 {
 		return
 	}
-	x, ok := obj.(interface {
+	x, ok := out.(interface {
 		UnmarshalJSON([]byte) error
 	})
 	if ok {
@@ -114,23 +106,78 @@ func (d Data) ToJSONObj(obj interface{}) {
 		if err != nil {
 			panic(err)
 		}
-	} else {
-		err := json.Unmarshal(d.v.(*internal.Data).X, obj)
-		if err != nil {
-			panic(err)
-		}
+		return
+	}
+
+	err := json.Unmarshal(d.v.(*internal.Data).X, out)
+	if err != nil {
+		panic(err)
 	}
 }
 
-func (d Data) Persistent() (Persistent, bool) {
+type ProtobufUnmarshaler interface {
+	Unmarshal([]byte) error
+}
+
+func (d Data) UnwrapProtobufObject(out ProtobufUnmarshaler) {
+	if d.v == nil {
+		return
+	}
+	if len(d.v.(*internal.Data).X) == 0 {
+		return
+	}
+	err := out.Unmarshal(d.v.(*internal.Data).X)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (d Data) Value() any {
+	return d.v
+}
+
+func (d Data) Marshalable() bool {
+	_, ok := d.v.(*internal.Data)
+	return ok
+}
+
+func (d Data) MarshalJSON() ([]byte, error) {
 	x, ok := d.v.(*internal.Data)
 	if ok {
-		if x != nil {
-			return Persistent{d: *x}, true
-		} else {
-			return Persistent{}, true
-		}
+		return x.MarshalJSON()
 	}
+	return internal.Data{}.MarshalJSON()
+}
 
-	return Persistent{}, d.v == nil
+func (d Data) MarshalEasyJSON(w *jwriter.Writer) {
+	x, ok := d.v.(*internal.Data)
+	if ok {
+		x.MarshalEasyJSON(w)
+		return
+	}
+	internal.Data{}.MarshalEasyJSON(w)
+}
+
+func (d *Data) UnmarshalJSON(dAtA []byte) error {
+	var v internal.Data
+	err := v.UnmarshalJSON(dAtA)
+	if err != nil {
+		return err
+	}
+	d.v = &v
+	return nil
+}
+
+func (d *Data) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	var v internal.Data
+	v.UnmarshalEasyJSON(l)
+	d.v = &v
+}
+
+func (d Data) TurnIntoHermit() Hermit {
+	x, ok := d.v.(*internal.Data)
+	if ok {
+		return Hermit{*x}
+	}
+	return Hermit{}
 }

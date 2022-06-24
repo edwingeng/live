@@ -2,46 +2,21 @@ package live
 
 import (
 	"bytes"
-	"math"
-	"reflect"
-	"testing"
-
 	"github.com/edwingeng/live/internal"
+	"math"
+	"testing"
 )
 
-func TestBlacklist_covers(t *testing.T) {
-	var bl blacklist = []string{
-		"a/b/c",
-		"a/x",
-	}
-
-	data := map[string]bool{
-		"a/b/c":     true,
-		"a/b":       false,
-		"a/b/c/d":   true,
-		"a/b/c/d/e": true,
-		"a/x":       true,
-		"a":         false,
-		"a/x/y":     true,
-		"a/x/y/z":   true,
-		"h":         false,
-		"h/i":       false,
-	}
-
-	for pkg, expected := range data {
-		if bl.covers(pkg) != expected {
-			t.Fatalf("bl.covers(pkg) != expected. pkg: %s, expected: %v", pkg, expected)
-		}
-	}
+func rec() {
+	_ = recover()
 }
 
-func TestBool(t *testing.T) {
-	h := NewHelper(nil)
-	a := []bool{true, false}
+func TestWrapBool(t *testing.T) {
+	a := []bool{false, true}
 	for _, v := range a {
-		d := h.WrapBool(v)
-		if d.ToBool() != v {
-			t.Fatal("d.ToBool() != v")
+		d := WrapBool(v)
+		if d.Bool() != v {
+			t.Fatal("d.Bool() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -49,22 +24,19 @@ func TestBool(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToBool()
-		t.Fatal("d.ToBool() should panic")
+		d.Bool()
+		t.Fatal("d.Bool() should panic")
 	}()
 }
 
-func TestInt(t *testing.T) {
-	h := NewHelper(nil)
-	a := []int{-1, 0, 1, 10, 1000}
+func TestWrapInt(t *testing.T) {
+	a := []int{math.MinInt, -1, 0, 1, 100, math.MaxInt}
 	for _, v := range a {
-		d := h.WrapInt(v)
-		if d.ToInt() != v {
-			t.Fatal("d.ToInt() != v")
+		d := WrapInt(v)
+		if d.Int() != v {
+			t.Fatal("d.Int() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -72,22 +44,19 @@ func TestInt(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToInt()
-		t.Fatal("d.ToInt() should panic")
+		d.Int()
+		t.Fatal("d.Int() should panic")
 	}()
 }
 
-func TestInt8(t *testing.T) {
-	h := NewHelper(nil)
-	a := []int8{math.MinInt8, -1, 0, 1, 10, math.MaxInt8}
+func TestWrapInt8(t *testing.T) {
+	a := []int8{math.MinInt8, -1, 0, 1, 100, math.MaxInt8}
 	for _, v := range a {
-		d := h.WrapInt8(v)
-		if d.ToInt8() != v {
-			t.Fatal("d.ToInt8() != v")
+		d := WrapInt8(v)
+		if d.Int8() != v {
+			t.Fatal("d.Int8() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -95,22 +64,19 @@ func TestInt8(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToInt8()
-		t.Fatal("d.ToInt8() should panic")
+		d.Int8()
+		t.Fatal("d.Int8() should panic")
 	}()
 }
 
-func TestInt16(t *testing.T) {
-	h := NewHelper(nil)
-	a := []int16{math.MinInt16, -1, 0, 1, 10, math.MaxInt16}
+func TestWrapInt16(t *testing.T) {
+	a := []int16{math.MinInt16, -1, 0, 1, 100, math.MaxInt16}
 	for _, v := range a {
-		d := h.WrapInt16(v)
-		if d.ToInt16() != v {
-			t.Fatal("d.ToInt16() != v")
+		d := WrapInt16(v)
+		if d.Int16() != v {
+			t.Fatal("d.Int16() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -118,22 +84,19 @@ func TestInt16(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToInt16()
-		t.Fatal("d.ToInt16() should panic")
+		d.Int16()
+		t.Fatal("d.Int16() should panic")
 	}()
 }
 
-func TestInt32(t *testing.T) {
-	h := NewHelper(nil)
-	a := []int32{math.MinInt32, -1, 0, 1, 10, math.MaxInt32}
+func TestWrapInt32(t *testing.T) {
+	a := []int32{math.MinInt32, -1, 0, 1, 100, math.MaxInt32}
 	for _, v := range a {
-		d := h.WrapInt32(v)
-		if d.ToInt32() != v {
-			t.Fatal("d.ToInt32() != v")
+		d := WrapInt32(v)
+		if d.Int32() != v {
+			t.Fatal("d.Int32() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -141,22 +104,19 @@ func TestInt32(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToInt32()
-		t.Fatal("d.ToInt32() should panic")
+		d.Int32()
+		t.Fatal("d.Int32() should panic")
 	}()
 }
 
-func TestInt64(t *testing.T) {
-	h := NewHelper(nil)
-	a := []int64{math.MinInt64, -1, 0, 1, 10, math.MaxInt64}
+func TestWrapInt64(t *testing.T) {
+	a := []int64{math.MinInt64, -1, 0, 1, 100, math.MaxInt64}
 	for _, v := range a {
-		d := h.WrapInt64(v)
-		if d.ToInt64() != v {
-			t.Fatal("d.ToInt64() != v")
+		d := WrapInt64(v)
+		if d.Int64() != v {
+			t.Fatal("d.Int64() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -164,45 +124,19 @@ func TestInt64(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToInt64()
-		t.Fatal("d.ToInt64() should panic")
+		d.Int64()
+		t.Fatal("d.Int64() should panic")
 	}()
 }
 
-func TestUint(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint{0, 1, 10, 1000}
+func TestWrapUint(t *testing.T) {
+	a := []uint{0, 1, 100, math.MaxUint}
 	for _, v := range a {
-		d := h.WrapUint(v)
-		if d.ToUint() != v {
-			t.Fatal("d.ToUint() != v")
-		}
-		if d.v.(*internal.Data).X == nil && d.v.(*internal.Data).N != 0 {
-			t.Fatal("d.v.(*internal.Data).X == nil")
-		}
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var d Data
-		d.ToUint()
-		t.Fatal("d.ToUint() should panic")
-	}()
-}
-
-func TestUint8(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint8{0, 1, 10, math.MaxUint8}
-	for _, v := range a {
-		d := h.WrapUint8(v)
-		if d.ToUint8() != v {
-			t.Fatal("d.ToUint8() != v")
+		d := WrapUint(v)
+		if d.Uint() != v {
+			t.Fatal("d.Uint() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -210,22 +144,19 @@ func TestUint8(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToUint8()
-		t.Fatal("d.ToUint8() should panic")
+		d.Uint()
+		t.Fatal("d.Uint() should panic")
 	}()
 }
 
-func TestUint16(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint16{0, 1, 10, math.MaxUint16}
+func TestWrapUint8(t *testing.T) {
+	a := []uint8{0, 1, 100, math.MaxUint8}
 	for _, v := range a {
-		d := h.WrapUint16(v)
-		if d.ToUint16() != v {
-			t.Fatal("d.ToUint16() != v")
+		d := WrapUint8(v)
+		if d.Uint8() != v {
+			t.Fatal("d.Uint8() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -233,22 +164,19 @@ func TestUint16(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToUint16()
-		t.Fatal("d.ToUint16() should panic")
+		d.Uint8()
+		t.Fatal("d.Uint8() should panic")
 	}()
 }
 
-func TestUint32(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint32{0, 1, 10, math.MaxUint32}
+func TestWrapUint16(t *testing.T) {
+	a := []uint16{0, 1, 100, math.MaxUint16}
 	for _, v := range a {
-		d := h.WrapUint32(v)
-		if d.ToUint32() != v {
-			t.Fatal("d.ToUint32() != v")
+		d := WrapUint16(v)
+		if d.Uint16() != v {
+			t.Fatal("d.Uint16() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -256,61 +184,19 @@ func TestUint32(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToUint32()
-		t.Fatal("d.ToUint32() should panic")
+		d.Uint16()
+		t.Fatal("d.Uint16() should panic")
 	}()
 }
 
-func TestUint64(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint64{0, 1, 10, math.MaxUint64}
+func TestWrapUint32(t *testing.T) {
+	a := []uint32{0, 1, 100, math.MaxUint32}
 	for _, v := range a {
-		d := h.WrapUint64(v)
-		if d.ToUint64() != v {
-			t.Fatal("d.ToUint64() != v")
-		}
-		if d.v.(*internal.Data).X == nil && d.v.(*internal.Data).N != 0 {
-			t.Fatal("d.v.(*internal.Data).X == nil")
-		}
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var d Data
-		d.ToUint64()
-		t.Fatal("d.ToUint64() should panic")
-	}()
-}
-
-func TestUintptr(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uintptr{0, 1, 10, 1000}
-	for _, v := range a {
-		d := h.WrapValue(v)
-		switch u := d.V().(type) {
-		case uintptr:
-			if u != v {
-				t.Fatal("u != v")
-			}
-		default:
-			t.Fatal("unexpected data type")
-		}
-	}
-}
-
-func TestFloat32(t *testing.T) {
-	h := NewHelper(nil)
-	a := []float32{-9.9, -1, 0, 1, 10, 1000.28}
-	for _, v := range a {
-		d := h.WrapFloat32(v)
-		if math.Abs(float64(d.ToFloat32()-v)) > 0.000001 {
-			t.Fatal("math.Abs(float64(d.ToFloat32()-v)) > 0.000001")
+		d := WrapUint32(v)
+		if d.Uint32() != v {
+			t.Fatal("d.Uint32() != v")
 		}
 		if d.v.(*internal.Data).X != nil {
 			t.Fatal("d.v.(*internal.Data).X != nil")
@@ -318,415 +204,160 @@ func TestFloat32(t *testing.T) {
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToFloat32()
-		t.Fatal("d.ToFloat32() should panic")
+		d.Uint32()
+		t.Fatal("d.Uint32() should panic")
 	}()
 }
 
-func TestFloat64(t *testing.T) {
-	h := NewHelper(nil)
-	a := []float64{-9.9, -1, 0, 1, 10, 1000.28}
+func TestWrapUint64(t *testing.T) {
+	a := []uint64{0, 1, 100, math.MaxUint64}
 	for _, v := range a {
-		d := h.WrapFloat64(v)
-		if math.Abs(d.ToFloat64()-v) > 0.000001 {
-			t.Fatal("math.Abs(d.ToFloat64()-v) > 0.000001")
+		d := WrapUint64(v)
+		if d.Uint64() != v {
+			t.Fatal("d.Uint64() != v")
 		}
-		if d.v.(*internal.Data).X == nil {
-			t.Fatal("d.v.(*internal.Data).X == nil")
+		if d.v.(*internal.Data).X != nil {
+			t.Fatal("d.v.(*internal.Data).X != nil")
 		}
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToFloat64()
-		t.Fatal("d.ToFloat64() should panic")
+		d.Uint64()
+		t.Fatal("d.Uint64() should panic")
 	}()
 }
 
-func TestString(t *testing.T) {
-	h := NewHelper(nil)
+func TestWrapFloat32(t *testing.T) {
+	a := []float32{math.SmallestNonzeroFloat32, -9.9, -1, 0, 1, 100, 1000.28, math.MaxFloat32}
+	for _, v := range a {
+		d := WrapFloat32(v)
+		if d.Float32() != v {
+			t.Fatal("d.Float32() != v")
+		}
+		if d.v.(*internal.Data).X != nil {
+			t.Fatal("d.v.(*internal.Data).X != nil")
+		}
+	}
+
+	func() {
+		defer rec()
+		var d Data
+		d.Float32()
+		t.Fatal("d.Float32() should panic")
+	}()
+}
+
+func TestWrapFloat64(t *testing.T) {
+	a := []float64{math.SmallestNonzeroFloat64, -9.9, -1, 0, 1, 100, 1000.28, math.MaxFloat64}
+	for _, v := range a {
+		d := WrapFloat64(v)
+		if d.Float64() != v {
+			t.Fatal("d.Float64() != v")
+		}
+		if d.v.(*internal.Data).X != nil {
+			t.Fatal("d.v.(*internal.Data).X != nil")
+		}
+	}
+
+	func() {
+		defer rec()
+		var d Data
+		d.Float64()
+		t.Fatal("d.Float64() should panic")
+	}()
+}
+
+func TestWrapString(t *testing.T) {
 	a := []string{"", "hello", "it is a good day to die"}
 	for _, v := range a {
-		d := h.WrapString(v)
-		if d.ToString() != v {
-			t.Fatal("d.ToString() != v")
+		d := WrapString(v)
+		if d.String() != v {
+			t.Fatal("d.String() != v")
 		}
-		if d.v.(*internal.Data).X == nil {
-			t.Fatal("d.v.(*internal.Data).X == nil")
+		if d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0 {
+			t.Fatal("d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0")
 		}
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
+		defer rec()
 		var d Data
-		d.ToString()
-		t.Fatal("d.ToString() should panic")
+		_ = d.String()
+		t.Fatal("d.String() should panic")
 	}()
 }
 
-func TestBytes(t *testing.T) {
-	h := NewHelper(nil)
-	a := [][]byte{[]byte(""), []byte("hello"), []byte("it is a good day to die")}
+func TestWrapBytes(t *testing.T) {
+	a := []string{"", "hello", "it is a good day to die"}
 	for _, v := range a {
-		d := h.WrapBytes(v)
-		if !bytes.Equal(d.ToBytes(), v) {
-			t.Fatal("!bytes.Equal(d.ToBytes(), v)")
+		v := []byte(v)
+		d := WrapBytes(v)
+		if !bytes.Equal(d.Bytes(), v) {
+			t.Fatal("!bytes.Equal(d.Bytes(), v)")
 		}
-		if d.v.(*internal.Data).X == nil {
-			t.Fatal("d.v.(*internal.Data).X == nil")
+		if d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0 {
+			t.Fatal("d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0")
 		}
 	}
 
-	if h.WrapBytes(nil).ToBytes() != nil {
-		t.Fatal("h.WrapBytes(nil).ToBytes() != nil")
-	}
-	if Nil.ToBytes() != nil {
-		t.Fatal("Nil.ToBytes() != nil")
-	}
-}
-
-func TestComplex64(t *testing.T) {
-	h := NewHelper(nil)
-	a := []complex64{
-		complex(0, 0.5),
-		complex(1, 1.5),
-	}
-	for _, v := range a {
-		d := h.WrapValue(v)
-		switch u := d.V().(type) {
-		case complex64:
-			if math.Abs(float64(real(u)-real(v))) > 0.000001 {
-				t.Fatal("math.Abs(float64(real(u)-real(v))) > 0.000001")
-			}
-			if math.Abs(float64(imag(u)-imag(v))) > 0.000001 {
-				t.Fatal("math.Abs(float64(imag(u)-imag(v))) > 0.000001")
-			}
-		default:
-			t.Fatal("unexpected data type")
-		}
-	}
-}
-
-func TestComplex128(t *testing.T) {
-	h := NewHelper(nil)
-	a := []complex128{
-		complex(0, 0.5),
-		complex(1, 1.5),
-	}
-	for _, v := range a {
-		d := h.WrapValue(v)
-		switch u := d.V().(type) {
-		case complex128:
-			if math.Abs(real(u)-real(v)) > 0.000001 {
-				t.Fatal("math.Abs(real(u)-real(v)) > 0.000001")
-			}
-			if math.Abs(imag(u)-imag(v)) > 0.000001 {
-				t.Fatal("math.Abs(imag(u)-imag(v)) > 0.000001")
-			}
-		default:
-			t.Fatal("unexpected data type")
-		}
-	}
-}
-
-func TestArray(t *testing.T) {
-	h := NewHelper(nil)
-	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
-	a := [3]*uint64{&n1, &n2, &n3}
-	d := h.WrapValue(a)
-	switch u := d.V().(type) {
-	case [3]*uint64:
-		for i, v := range u {
-			if v != a[i] {
-				t.Fatal("v != a[i]")
-			}
-		}
-	default:
-		t.Fatal("unexpected data type")
+	if WrapBytes(nil).Bytes() != nil {
+		t.Fatal("WrapBytes(nil).Bytes() != nil")
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
-		a := []func(){
-			func() {},
-			func() {},
-			func() {},
+		defer rec()
+		_ = Nil.Bytes()
+		t.Fatal("Nil.Bytes() should panic")
+	}()
+}
+
+func TestWrapComplex64(t *testing.T) {
+	a := []float32{0, 0, 1, -1, math.Pi, math.E, math.MaxFloat32, math.SmallestNonzeroFloat32}
+	for i := 0; i < len(a); i += 2 {
+		d := WrapComplex64(complex(a[i], a[i+1]))
+		v := d.Complex64()
+		if real(v) != a[i] || imag(v) != a[i+1] {
+			t.Fatal(`real(v) != a[i] || imag(v) != a[i+1]`)
 		}
-		h.WrapValue(a)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-}
-
-func TestChan(t *testing.T) {
-	h := NewHelper(nil)
-	a := []uint64{0, 1, math.MaxUint64}
-	type w struct {
-		n uint64
-	}
-	ch := make(chan w, len(a))
-	for _, v := range a {
-		ch <- w{n: v}
-	}
-
-	d := h.WrapValue(ch)
-	switch u := d.V().(type) {
-	case chan w:
-		for _, v := range a {
-			x := <-u
-			if x.n != v {
-				t.Fatal("x.n != v")
-			}
+		if d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0 {
+			t.Fatal("d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0")
 		}
-	default:
-		t.Fatal("unexpected data type")
 	}
-}
 
-func TestFunc(t *testing.T) {
-	h := NewHelper(nil)
 	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h.WrapValue(func() {})
-		t.Fatal("h.WrapValue() should panic")
+		defer rec()
+		var d Data
+		_ = d.Complex64()
+		t.Fatal("d.Complex64() should panic")
 	}()
 }
 
-func TestEmbedded(t *testing.T) {
-	h := NewHelper(nil)
-	d := h.WrapValue(h.WrapInt(1))
-	if d.V().(Data).ToInt() != 1 {
-		t.Fatal("d.V().(Data).ToInt() != 1")
-	}
-
-	type Super struct {
-		d Data
-	}
-	var super Super
-	h.WrapValue(super)
-}
-
-type printer interface {
-	Print()
-}
-
-type myPrinter struct{}
-
-func (_ myPrinter) Print() {}
-
-type myPrinterWrapper1 struct {
-	p printer
-}
-
-type myPrinterWrapper2 struct {
-	p printer `live:"true"`
-}
-
-func TestInterface(t *testing.T) {
-	h := NewHelper(nil)
-	var v interface{} = 100
-	h.WrapValue(v)
-
-	if h.WrapValue(nil).V() != nil {
-		t.Fatal("h.WrapValue(nil).V() != nil")
-	}
-
-	if h.WrapValue([]byte(nil)).V() == nil {
-		t.Fatal("h.WrapValue([]byte(nil)).V() == nil")
-	}
-
-	var w1 myPrinterWrapper1
-	w1.p = myPrinter{}
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h.WrapValue(&w1)
-		t.Fatal("WrapValue should panic")
-	}()
-
-	var w2 myPrinterWrapper2
-	w2.p = myPrinter{}
-	if h.WrapValue(&w2).V() != &w2 {
-		t.Fatal("h.WrapValue(&w2).V() != &w2")
-	}
-}
-
-func TestMap(t *testing.T) {
-	h := NewHelper(nil)
-	m := map[int]string{
-		1: "10",
-		2: "20",
-		3: "30",
-	}
-	d := h.WrapValue(m)
-	switch u := d.V().(type) {
-	case map[int]string:
-		if len(u) != len(m) {
-			t.Fatal("len(u) != len(m)")
+func TestWrapComplex128(t *testing.T) {
+	a := []float64{0, 0, 1, -1, math.Pi, math.E, math.MaxFloat64, math.SmallestNonzeroFloat64}
+	for i := 0; i < len(a); i += 2 {
+		d := WrapComplex128(complex(a[i], a[i+1]))
+		v := d.Complex128()
+		if real(v) != a[i] || imag(v) != a[i+1] {
+			t.Fatal(`real(v) != a[i] || imag(v) != a[i+1]`)
 		}
-		for k := range u {
-			if _, ok := m[k]; !ok {
-				t.Fatal("_, ok := m[k]; !ok")
-			}
+		if d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0 {
+			t.Fatal("d.v.(*internal.Data).X == nil || d.v.(*internal.Data).N != 0")
 		}
-	default:
-		t.Fatal("unexpected data type")
 	}
 
 	func() {
-		defer func() {
-			_ = recover()
-		}()
-		m := make(map[int][]interface{})
-		h.WrapValue(m)
-		t.Fatal("h.WrapValue() should panic")
+		defer rec()
+		var d Data
+		_ = d.Complex128()
+		t.Fatal("d.Complex128() should panic")
 	}()
 }
 
-func TestPointer(t *testing.T) {
-	h := NewHelper(nil)
-	n := 100
-	p := &n
-	d := h.WrapValue(&p)
-	switch u := d.V().(type) {
-	case **int:
-		if u != &p {
-			t.Fatal("u != &p")
-		}
-	default:
-		t.Fatal("unexpected data type")
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		var v interface{}
-		h.WrapValue(&v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-}
-
-func TestSlice(t *testing.T) {
-	h := NewHelper(nil)
-	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
-	a := []*uint64{&n1, &n2, &n3}
-	d := h.WrapValue(a)
-	switch u := d.V().(type) {
-	case []*uint64:
-		for i, v := range u {
-			if v != a[i] {
-				t.Fatal("v != a[i]")
-			}
-		}
-	default:
-		t.Fatal("unexpected data type")
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		a := []func(){
-			func() {},
-			func() {},
-			func() {},
-		}
-		h.WrapValue(a)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-}
-
-type omega struct {
-	A int
-	B string
-	C struct {
-		D int8
-		E bool
-	}
-}
-
-func (o *omega) SetA(a int) {
-	o.A = a
-}
-
-func TestStruct(t *testing.T) {
-	h := NewHelper(nil)
-	v := omega{
-		A: 100,
-		B: "hello",
-		C: struct {
-			D int8
-			E bool
-		}{D: 1, E: true},
-	}
-	v.SetA(200)
-
-	d := h.WrapValue(v)
-	switch u := d.V().(type) {
-	case omega:
-		if u != v {
-			t.Fatal("u != v")
-		}
-	default:
-		t.Fatal("unexpected data type")
-	}
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		v := struct {
-			N int
-			X interface{}
-		}{}
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-}
-
-func TestBlacklist(t *testing.T) {
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h := NewHelper([]string{"github.com/edwingeng/live/internal"})
-		var v internal.Data
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		h := NewHelper([]string{"github.com/edwingeng/live"})
-		var v internal.Data
-		h.WrapValue(v)
-		t.Fatal("h.WrapValue() should panic")
-	}()
-
-	func() {
-		h := NewHelper([]string{"github.com/edwin"})
-		var v internal.Data
-		h.WrapValue(v)
-	}()
-}
-
-func TestJSON(t *testing.T) {
+func TestWrapObject(t *testing.T) {
 	var obj1, obj2 struct {
 		A int64
 		B string
@@ -734,28 +365,67 @@ func TestJSON(t *testing.T) {
 	obj1.A = 100
 	obj2.B = "hello"
 
-	h := NewHelper(nil)
-	h.WrapJSONObj(&obj1).ToJSONObj(&obj2)
+	WrapObject(&obj1).UnwrapObject(&obj2)
 	if obj2 != obj1 {
 		t.Fatal("obj2 != obj1")
 	}
+
+	var obj3, obj4 internal.Data
+	obj3.X = []byte("hello")
+	obj4.N = 100
+	WrapObject(obj3).UnwrapObject(&obj4)
+	if !bytes.Equal(obj4.X, obj3.X) {
+		t.Fatal(`!bytes.Equal(obj4.X, obj3.X)`)
+	}
+	if obj4.N != 100 {
+		t.Fatal(`obj4.N != 100`)
+	}
+
+	obj5, obj6 := obj1, obj1
+	Nil.UnwrapObject(&obj6)
+	if obj6 != obj5 {
+		t.Fatal(`obj6 != obj5`)
+	}
+	liveZero.UnwrapObject(&obj6)
+	if obj6 != obj5 {
+		t.Fatal(`obj6 != obj5`)
+	}
+
+	if WrapObject(nil) != liveZero {
+		t.Fatal(`WrapObject(nil) != liveZero`)
+	}
+	if wrapObjectImpl(nil) != liveZero {
+		t.Fatal(`wrapObjectImpl(nil) != liveZero`)
+	}
 }
 
-func TestHelper_FromInternalBytes(t *testing.T) {
-	h := NewHelper(nil)
-	d := h.WrapUint64(0xFFFFFFFFFFFFFFFF)
-	p, _ := d.Persistent()
-	internalBytes, ok := p.PeekInternalBytes()
-	if !ok {
-		t.Fatal("PeekInternalBytes does not work")
+func TestWrapProtobufObject(t *testing.T) {
+	if WrapProtobufObject(nil) != liveZero {
+		t.Fatal(`WrapProtobufObject(nil) != liveZero`)
 	}
 
-	newData := h.FromInternalBytes(internalBytes)
-	if newData.ToUint64() != 0xFFFFFFFFFFFFFFFF {
-		t.Fatal("newData.ToUint64() != 0xFFFFFFFFFFFFFFFF")
+	if WrapProtobufObject(&internal.Data{}).Bytes() != nil {
+		t.Fatal(`WrapProtobufObject(&internal.Data{}).Bytes() != nil`)
 	}
 
-	if !reflect.DeepEqual(d, p.Data()) {
-		t.Fatal("!reflect.DeepEqual(d, p.Data())")
+	var data internal.Data
+	Data{}.UnwrapProtobufObject(&data)
+	if data.X != nil || data.N != 0 {
+		t.Fatal(`data.X != nil || data.N != 0`)
+	}
+	liveZero.UnwrapProtobufObject(&data)
+	if data.X != nil || data.N != 0 {
+		t.Fatal(`data.X != nil || data.N != 0`)
+	}
+
+	var d internal.Data
+	d.X = []byte("hello")
+	d.N = 100
+	WrapProtobufObject(&d).UnwrapProtobufObject(&data)
+	if string(data.X) != "hello" {
+		t.Fatal(`string(data.X) != "hello"`)
+	}
+	if data.N != 100 {
+		t.Fatal(`data.N != 100`)
 	}
 }
