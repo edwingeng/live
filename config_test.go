@@ -381,7 +381,7 @@ func TestConfig_WrapUnsafePointer(t *testing.T) {
 	func() {
 		defer rec()
 		cfg := NewConfig(nil)
-		ptr := unsafe.Pointer(uintptr(0))
+		ptr := unsafe.Pointer(&cfg)
 		cfg.WrapValueDirect(ptr)
 		t.Fatal("WrapValueDirect() should panic")
 	}()
