@@ -1,3 +1,6 @@
+// Package live provides some types and functions designed for plugin hot reload,
+// which solves the problem that the same type in different versions of a plugin
+// are actually not the same at runtime.
 package live
 
 import (
@@ -13,6 +16,7 @@ var (
 	Nil Data
 )
 
+// Data is a handy general-purpose data wrapper.
 type Data struct {
 	v any
 }
