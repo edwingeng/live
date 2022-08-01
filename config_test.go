@@ -261,7 +261,7 @@ type myPrinterWrapper2 struct {
 
 func TestConfig_WrapInterface(t *testing.T) {
 	cfg := NewConfig(nil)
-	var v any = 100
+	var v interface{} = 100
 	cfg.WrapValueDirect(v)
 
 	if cfg.WrapValueDirect(nil).Value() != nil {
@@ -314,14 +314,14 @@ func TestConfig_WrapMap(t *testing.T) {
 		type wrapper struct {
 			n uintptr
 		}
-		xMap := make(map[wrapper][]any)
+		xMap := make(map[wrapper][]interface{})
 		cfg.WrapValueDirect(xMap)
 		t.Fatal("WrapValueDirect() should panic")
 	}()
 
 	func() {
 		defer rec()
-		xMap := make(map[int][]any)
+		xMap := make(map[int][]interface{})
 		cfg.WrapValueDirect(xMap)
 		t.Fatal("WrapValueDirect() should panic")
 	}()
@@ -343,7 +343,7 @@ func TestConfig_WrapPointer(t *testing.T) {
 
 	func() {
 		defer rec()
-		var v any
+		var v interface{}
 		cfg.WrapValueDirect(&v)
 		t.Fatal("WrapValueDirect() should panic")
 	}()
@@ -426,7 +426,7 @@ func TestConfig_WrapStruct(t *testing.T) {
 		defer rec()
 		q := struct {
 			N int
-			X any
+			X interface{}
 		}{}
 		cfg.WrapValueDirect(q)
 		t.Fatal("WrapValueDirect() should panic")

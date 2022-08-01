@@ -18,7 +18,7 @@ var (
 
 // Data is a handy general-purpose data wrapper.
 type Data struct {
-	v any
+	v interface{}
 }
 
 func (d Data) Bool() bool {
@@ -95,7 +95,7 @@ func (d Data) Complex128() complex128 {
 	return complex(math.Float64frombits(r), math.Float64frombits(i))
 }
 
-func (d Data) UnwrapObject(out any) {
+func (d Data) UnwrapObject(out interface{}) {
 	if d.v == nil {
 		return
 	}
@@ -136,7 +136,7 @@ func (d Data) UnwrapProtobufObject(out ProtobufUnmarshaler) {
 	}
 }
 
-func (d Data) Value() any {
+func (d Data) Value() interface{} {
 	return d.v
 }
 

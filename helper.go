@@ -114,7 +114,7 @@ func wrapObjectImpl(x json.Marshaler) Data {
 	return Data{&internal.Data{X: bts}}
 }
 
-func WrapObject(obj any) Data {
+func WrapObject(obj interface{}) Data {
 	if obj == nil {
 		return liveZero
 	}
@@ -151,6 +151,6 @@ func WrapProtobufObject(obj ProtobufMarshaler) Data {
 	return Data{&internal.Data{X: bts}}
 }
 
-func WrapValueDirect(v any, cfg Config) Data {
+func WrapValueDirect(v interface{}, cfg Config) Data {
 	return cfg.WrapValueDirect(v)
 }

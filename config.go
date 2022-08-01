@@ -37,7 +37,7 @@ func NewConfig(pkgBlacklist []string) Config {
 	return cfg
 }
 
-func (cfg Config) WrapValueDirect(v any) Data {
+func (cfg Config) WrapValueDirect(v interface{}) Data {
 	if v == nil {
 		return Nil
 	}

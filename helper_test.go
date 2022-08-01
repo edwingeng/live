@@ -7,6 +7,26 @@ import (
 	"testing"
 )
 
+const (
+	intSize = 32 << (^uint(0) >> 63) // 32 or 64
+
+	MaxInt    = 1<<(intSize-1) - 1
+	MinInt    = -1 << (intSize - 1)
+	MaxInt8   = 1<<7 - 1
+	MinInt8   = -1 << 7
+	MaxInt16  = 1<<15 - 1
+	MinInt16  = -1 << 15
+	MaxInt32  = 1<<31 - 1
+	MinInt32  = -1 << 31
+	MaxInt64  = 1<<63 - 1
+	MinInt64  = -1 << 63
+	MaxUint   = 1<<intSize - 1
+	MaxUint8  = 1<<8 - 1
+	MaxUint16 = 1<<16 - 1
+	MaxUint32 = 1<<32 - 1
+	MaxUint64 = 1<<64 - 1
+)
+
 func rec() {
 	_ = recover()
 }
@@ -32,7 +52,7 @@ func TestWrapBool(t *testing.T) {
 }
 
 func TestWrapInt(t *testing.T) {
-	a := []int{math.MinInt, -1, 0, 1, 100, math.MaxInt}
+	a := []int{MinInt, -1, 0, 1, 100, MaxInt}
 	for _, v := range a {
 		d := WrapInt(v)
 		if d.Int() != v {
@@ -52,7 +72,7 @@ func TestWrapInt(t *testing.T) {
 }
 
 func TestWrapInt8(t *testing.T) {
-	a := []int8{math.MinInt8, -1, 0, 1, 100, math.MaxInt8}
+	a := []int8{MinInt8, -1, 0, 1, 100, MaxInt8}
 	for _, v := range a {
 		d := WrapInt8(v)
 		if d.Int8() != v {
@@ -72,7 +92,7 @@ func TestWrapInt8(t *testing.T) {
 }
 
 func TestWrapInt16(t *testing.T) {
-	a := []int16{math.MinInt16, -1, 0, 1, 100, math.MaxInt16}
+	a := []int16{MinInt16, -1, 0, 1, 100, MaxInt16}
 	for _, v := range a {
 		d := WrapInt16(v)
 		if d.Int16() != v {
@@ -92,7 +112,7 @@ func TestWrapInt16(t *testing.T) {
 }
 
 func TestWrapInt32(t *testing.T) {
-	a := []int32{math.MinInt32, -1, 0, 1, 100, math.MaxInt32}
+	a := []int32{MinInt32, -1, 0, 1, 100, MaxInt32}
 	for _, v := range a {
 		d := WrapInt32(v)
 		if d.Int32() != v {
@@ -112,7 +132,7 @@ func TestWrapInt32(t *testing.T) {
 }
 
 func TestWrapInt64(t *testing.T) {
-	a := []int64{math.MinInt64, -1, 0, 1, 100, math.MaxInt64}
+	a := []int64{MinInt64, -1, 0, 1, 100, MaxInt64}
 	for _, v := range a {
 		d := WrapInt64(v)
 		if d.Int64() != v {
@@ -132,7 +152,7 @@ func TestWrapInt64(t *testing.T) {
 }
 
 func TestWrapUint(t *testing.T) {
-	a := []uint{0, 1, 100, math.MaxUint}
+	a := []uint{0, 1, 100, MaxUint}
 	for _, v := range a {
 		d := WrapUint(v)
 		if d.Uint() != v {
@@ -152,7 +172,7 @@ func TestWrapUint(t *testing.T) {
 }
 
 func TestWrapUint8(t *testing.T) {
-	a := []uint8{0, 1, 100, math.MaxUint8}
+	a := []uint8{0, 1, 100, MaxUint8}
 	for _, v := range a {
 		d := WrapUint8(v)
 		if d.Uint8() != v {
@@ -172,7 +192,7 @@ func TestWrapUint8(t *testing.T) {
 }
 
 func TestWrapUint16(t *testing.T) {
-	a := []uint16{0, 1, 100, math.MaxUint16}
+	a := []uint16{0, 1, 100, MaxUint16}
 	for _, v := range a {
 		d := WrapUint16(v)
 		if d.Uint16() != v {
@@ -192,7 +212,7 @@ func TestWrapUint16(t *testing.T) {
 }
 
 func TestWrapUint32(t *testing.T) {
-	a := []uint32{0, 1, 100, math.MaxUint32}
+	a := []uint32{0, 1, 100, MaxUint32}
 	for _, v := range a {
 		d := WrapUint32(v)
 		if d.Uint32() != v {
@@ -212,7 +232,7 @@ func TestWrapUint32(t *testing.T) {
 }
 
 func TestWrapUint64(t *testing.T) {
-	a := []uint64{0, 1, 100, math.MaxUint64}
+	a := []uint64{0, 1, 100, MaxUint64}
 	for _, v := range a {
 		d := WrapUint64(v)
 		if d.Uint64() != v {
