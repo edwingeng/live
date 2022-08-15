@@ -39,7 +39,7 @@ printImportantMessage "====== go vet"
 go vet ./...
 
 printImportantMessage "====== gocyclo"
-gocyclo -over 15 .
+gocyclo -over 15 -ignore '.*\.pb\.go' .
 
 printImportantMessage "====== ineffassign"
 ineffassign ./...

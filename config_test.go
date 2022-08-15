@@ -76,6 +76,7 @@ func TestBlacklist_cover(t *testing.T) {
 	}
 }
 
+//gocyclo:ignore
 func TestConfig_WrapPrimitives(t *testing.T) {
 	cfg := NewConfig(nil)
 	if cfg.WrapValueDirect(1).Value() != 1 {

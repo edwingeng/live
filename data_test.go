@@ -16,6 +16,7 @@ type (
 	unmarshalFunc func(dAtA []byte) (Data, error)
 )
 
+//gocyclo:ignore
 func marshalIndirect(t *testing.T, marshal marshalFunc, unmarshal unmarshalFunc) {
 	a1 := []Data{Nil, {100}, {"str"}}
 	for _, d := range a1 {
