@@ -134,12 +134,12 @@ func TestData_TurnIntoHermit(t *testing.T) {
 	}
 }
 
-func TestData_Marshalable(t *testing.T) {
-	if WrapInt(100).Marshalable() != true {
-		t.Fatal(`WrapInt(100).Marshalable() != true`)
+func TestData_Marshallable(t *testing.T) {
+	if WrapInt(100).Marshallable() != true {
+		t.Fatal(`WrapInt(100).Marshallable() != true`)
 	}
 	cfg := NewConfig(nil)
-	if cfg.WrapValueDirect(100).Marshalable() != false {
-		t.Fatal(`cfg.WrapValueDirect(100).Marshalable() != false`)
+	if cfg.WrapValueDirect(100).Marshallable() != false {
+		t.Fatal(`cfg.WrapValueDirect(100).Marshallable() != false`)
 	}
 }

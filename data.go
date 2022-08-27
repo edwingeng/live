@@ -140,7 +140,7 @@ func (d Data) Value() interface{} {
 	return d.v
 }
 
-func (d Data) Marshalable() bool {
+func (d Data) Marshallable() bool {
 	_, ok := d.v.(*internal.Data)
 	return ok
 }
