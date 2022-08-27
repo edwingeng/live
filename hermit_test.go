@@ -5,13 +5,13 @@ import (
 	"testing"
 )
 
-func TestFromHermitBinary1(t *testing.T) {
+func TestFromHermitBytes1(t *testing.T) {
 	d1 := WrapInt64(100)
 	buf, err := d1.TurnIntoHermit().Marshal()
 	if err != nil {
 		t.Fatal(err)
 	}
-	d2, err := FromHermitBinary(buf)
+	d2, err := FromHermitBytes(buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,14 +20,14 @@ func TestFromHermitBinary1(t *testing.T) {
 	}
 }
 
-func TestFromHermitBinary2(t *testing.T) {
+func TestFromHermitBytes2(t *testing.T) {
 	d1 := WrapString("hello")
 	var buf [64]byte
 	n, err := d1.TurnIntoHermit().MarshalTo(buf[:])
 	if err != nil {
 		t.Fatal(err)
 	}
-	d2, err := FromHermitBinary(buf[:n])
+	d2, err := FromHermitBytes(buf[:n])
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func TestFromHermitBinary2(t *testing.T) {
 	}
 }
 
-func TestFromHermitBinary3(t *testing.T) {
+func TestFromHermitBytes3(t *testing.T) {
 	foo := struct {
 		Str string
 		Num int
@@ -56,7 +56,7 @@ func TestFromHermitBinary3(t *testing.T) {
 		t.Fatal(`n != len(buf)`)
 	}
 
-	d2, err := FromHermitBinary(buf[:n])
+	d2, err := FromHermitBytes(buf[:n])
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,8 +70,8 @@ func TestFromHermitBinary3(t *testing.T) {
 	}
 }
 
-func TestFromHermitBinary4(t *testing.T) {
-	d, err := FromHermitBinary([]byte("hello"))
+func TestFromHermitBytes4(t *testing.T) {
+	d, err := FromHermitBytes([]byte("hello"))
 	if err == nil {
 		t.Fatal(`err == nil`)
 	}

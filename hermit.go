@@ -22,7 +22,7 @@ func (h Hermit) Size() (n int) {
 	return h.d.Size()
 }
 
-func FromHermitBinary(dAtA []byte) (Data, error) {
+func FromHermitBytes(dAtA []byte) (Data, error) {
 	var d internal.Data
 	err := d.Unmarshal(dAtA)
 	if err != nil {
