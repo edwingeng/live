@@ -19,7 +19,7 @@ q1 := questInfo1{
     Name: "Of Love and Family",
 }
 
-ld := live.WrapObject(&q1)
+liveObj := WrapObject(&q1)
 
 // 2000 years later...
 
@@ -32,7 +32,7 @@ type questInfo2 struct {
 
 var q2 questInfo2
 q2.Desc = "<>"
-ld.UnwrapObject(&q2)
+liveObj.MustUnwrapObject(&q2)
 fmt.Printf("ID: %v\n", q2.ID)
 fmt.Printf("Name: %v\n", q2.Name)
 fmt.Printf("Desc: %v\n", q2.Desc)
@@ -43,4 +43,23 @@ fmt.Printf("Done: %v\n", q2.Done)
 // Name: Of Love and Family
 // Desc: <>
 // Done: false
+```
+
+# Unsupported Types
+
+- `uintptr`
+- `func`
+- `interface{}`, as known as `any`
+- `unsafe.Pointer`
+
+# FAQ
+
+- Is it allowed for a struct to have a field of an unsupported type?
+
+Yes. The field tag, `live:"true"`, is designed for that.
+
+```go
+type example struct {
+    x func() `live:"true"`
+}
 ```
