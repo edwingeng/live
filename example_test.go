@@ -14,7 +14,7 @@ func Example() {
 		Name: "Of Love and Family",
 	}
 
-	ld := WrapObject(&q1)
+	liveObj := MustWrapObject(&q1)
 
 	// 2000 years later...
 
@@ -27,7 +27,7 @@ func Example() {
 
 	var q2 questInfo2
 	q2.Desc = "<>"
-	ld.UnwrapObject(&q2)
+	liveObj.MustUnwrapObject(&q2)
 	fmt.Printf("ID: %v\n", q2.ID)
 	fmt.Printf("Name: %v\n", q2.Name)
 	fmt.Printf("Desc: %v\n", q2.Desc)

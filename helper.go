@@ -101,22 +101,22 @@ func WrapComplex128(v complex128) Data {
 	return Data{&internal.Data{X: buf}}
 }
 
-func wrapObjectImpl(x json.Marshaler) Data {
+func wrapObjectImpl(x json.Marshaler) (Data, error) {
 	if x == nil {
-		return liveZero
+		return liveZero, nil
 	}
 
 	bts, err := x.MarshalJSON()
 	if err != nil {
-		panic(err)
+		return Nil, err
 	}
 
-	return Data{&internal.Data{X: bts}}
+	return Data{&internal.Data{X: bts}}, nil
 }
 
-func WrapObject(obj interface{}) Data {
+func WrapObject(obj interface{}) (Data, error) {
 	if obj == nil {
-		return liveZero
+		return liveZero, nil
 	}
 
 	if x, ok := obj.(json.Marshaler); ok {
@@ -125,30 +125,46 @@ func WrapObject(obj interface{}) Data {
 
 	bts, err := json.Marshal(obj)
 	if err != nil {
-		panic(err)
+		return Nil, err
 	}
 
-	return Data{&internal.Data{X: bts}}
+	return Data{&internal.Data{X: bts}}, nil
+}
+
+func MustWrapObject(obj interface{}) Data {
+	data, err := WrapObject(obj)
+	if err != nil {
+		panic(err)
+	}
+	return data
 }
 
 type ProtobufMarshaler interface {
 	Marshal() ([]byte, error)
 }
 
-func WrapProtobufObject(obj ProtobufMarshaler) Data {
+func WrapProtobufObject(obj ProtobufMarshaler) (Data, error) {
 	if obj == nil {
-		return liveZero
+		return liveZero, nil
 	}
 
 	bts, err := obj.Marshal()
 	if err != nil {
-		panic(err)
+		return Nil, err
 	}
 	if len(bts) == 0 {
-		return liveZero
+		return liveZero, nil
 	}
 
-	return Data{&internal.Data{X: bts}}
+	return Data{&internal.Data{X: bts}}, nil
+}
+
+func MustWrapProtobufObject(obj ProtobufMarshaler) Data {
+	data, err := WrapProtobufObject(obj)
+	if err != nil {
+		panic(err)
+	}
+	return data
 }
 
 func WrapValueDirect(v interface{}, cfg Config) Data {

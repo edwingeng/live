@@ -377,7 +377,7 @@ func TestWrapComplex128(t *testing.T) {
 	}()
 }
 
-func TestWrapObject(t *testing.T) {
+func TestMustWrapObject(t *testing.T) {
 	var obj1, obj2 struct {
 		A int64
 		B string
@@ -385,7 +385,7 @@ func TestWrapObject(t *testing.T) {
 	obj1.A = 100
 	obj2.B = "hello"
 
-	WrapObject(&obj1).UnwrapObject(&obj2)
+	MustWrapObject(&obj1).MustUnwrapObject(&obj2)
 	if obj2 != obj1 {
 		t.Fatal("obj2 != obj1")
 	}
@@ -393,7 +393,7 @@ func TestWrapObject(t *testing.T) {
 	var obj3, obj4 internal.Data
 	obj3.X = []byte("hello")
 	obj4.N = 100
-	WrapObject(obj3).UnwrapObject(&obj4)
+	MustWrapObject(obj3).MustUnwrapObject(&obj4)
 	if !bytes.Equal(obj4.X, obj3.X) {
 		t.Fatal(`!bytes.Equal(obj4.X, obj3.X)`)
 	}
@@ -402,38 +402,38 @@ func TestWrapObject(t *testing.T) {
 	}
 
 	obj5, obj6 := obj1, obj1
-	Nil.UnwrapObject(&obj6)
+	Nil.MustUnwrapObject(&obj6)
 	if obj6 != obj5 {
 		t.Fatal(`obj6 != obj5`)
 	}
-	liveZero.UnwrapObject(&obj6)
+	liveZero.MustUnwrapObject(&obj6)
 	if obj6 != obj5 {
 		t.Fatal(`obj6 != obj5`)
 	}
 
-	if WrapObject(nil) != liveZero {
-		t.Fatal(`WrapObject(nil) != liveZero`)
+	if MustWrapObject(nil) != liveZero {
+		t.Fatal(`MustWrapObject(nil) != liveZero`)
 	}
-	if wrapObjectImpl(nil) != liveZero {
-		t.Fatal(`wrapObjectImpl(nil) != liveZero`)
+	if data, err := wrapObjectImpl(nil); err != nil || data != liveZero {
+		t.Fatal(`data, err := wrapObjectImpl(nil); err != nil || data != liveZero`)
 	}
 }
 
-func TestWrapProtobufObject(t *testing.T) {
-	if WrapProtobufObject(nil) != liveZero {
-		t.Fatal(`WrapProtobufObject(nil) != liveZero`)
+func TestMustWrapProtobufObject(t *testing.T) {
+	if MustWrapProtobufObject(nil) != liveZero {
+		t.Fatal(`MustWrapProtobufObject(nil) != liveZero`)
 	}
 
-	if WrapProtobufObject(&internal.Data{}).Bytes() != nil {
-		t.Fatal(`WrapProtobufObject(&internal.Data{}).Bytes() != nil`)
+	if MustWrapProtobufObject(&internal.Data{}).Bytes() != nil {
+		t.Fatal(`MustWrapProtobufObject(&internal.Data{}).Bytes() != nil`)
 	}
 
 	var data internal.Data
-	Data{}.UnwrapProtobufObject(&data)
+	Data{}.MustUnwrapProtobufObject(&data)
 	if data.X != nil || data.N != 0 {
 		t.Fatal(`data.X != nil || data.N != 0`)
 	}
-	liveZero.UnwrapProtobufObject(&data)
+	liveZero.MustUnwrapProtobufObject(&data)
 	if data.X != nil || data.N != 0 {
 		t.Fatal(`data.X != nil || data.N != 0`)
 	}
@@ -441,7 +441,7 @@ func TestWrapProtobufObject(t *testing.T) {
 	var d internal.Data
 	d.X = []byte("hello")
 	d.N = 100
-	WrapProtobufObject(&d).UnwrapProtobufObject(&data)
+	MustWrapProtobufObject(&d).MustUnwrapProtobufObject(&data)
 	if string(data.X) != "hello" {
 		t.Fatal(`string(data.X) != "hello"`)
 	}

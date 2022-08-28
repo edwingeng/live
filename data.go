@@ -95,25 +95,25 @@ func (d Data) Complex128() complex128 {
 	return complex(math.Float64frombits(r), math.Float64frombits(i))
 }
 
-func (d Data) UnwrapObject(out interface{}) {
+func (d Data) UnwrapObject(out interface{}) error {
 	if d.v == nil {
-		return
+		return nil
 	}
 	if len(d.v.(*internal.Data).X) == 0 {
-		return
+		return nil
 	}
 	x, ok := out.(interface {
 		UnmarshalJSON([]byte) error
 	})
 	if ok {
-		err := x.UnmarshalJSON(d.v.(*internal.Data).X)
-		if err != nil {
-			panic(err)
-		}
-		return
+		return x.UnmarshalJSON(d.v.(*internal.Data).X)
+	} else {
+		return json.Unmarshal(d.v.(*internal.Data).X, out)
 	}
+}
 
-	err := json.Unmarshal(d.v.(*internal.Data).X, out)
+func (d Data) MustUnwrapObject(out interface{}) {
+	err := d.UnwrapObject(out)
 	if err != nil {
 		panic(err)
 	}
@@ -123,14 +123,18 @@ type ProtobufUnmarshaler interface {
 	Unmarshal([]byte) error
 }
 
-func (d Data) UnwrapProtobufObject(out ProtobufUnmarshaler) {
+func (d Data) UnwrapProtobufObject(out ProtobufUnmarshaler) error {
 	if d.v == nil {
-		return
+		return nil
 	}
 	if len(d.v.(*internal.Data).X) == 0 {
-		return
+		return nil
 	}
-	err := out.Unmarshal(d.v.(*internal.Data).X)
+	return out.Unmarshal(d.v.(*internal.Data).X)
+}
+
+func (d Data) MustUnwrapProtobufObject(out ProtobufUnmarshaler) {
+	err := d.UnwrapProtobufObject(out)
 	if err != nil {
 		panic(err)
 	}

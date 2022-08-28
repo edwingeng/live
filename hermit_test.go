@@ -45,7 +45,7 @@ func TestFromHermitBytes3(t *testing.T) {
 		Num: 100,
 	}
 
-	d1 := WrapObject(&foo)
+	d1 := MustWrapObject(&foo)
 	hermit := d1.TurnIntoHermit()
 	buf := make([]byte, hermit.Size())
 	n, err := hermit.MarshalToSizedBuffer(buf)
@@ -64,7 +64,7 @@ func TestFromHermitBytes3(t *testing.T) {
 	bar := foo
 	bar.Str = ""
 	bar.Num = 0
-	d2.UnwrapObject(&bar)
+	d2.MustUnwrapObject(&bar)
 	if bar.Str != foo.Str || bar.Num != foo.Num {
 		t.Fatal(`bar.Str != foo.Str || bar.Num != foo.Num`)
 	}
