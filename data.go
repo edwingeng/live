@@ -181,11 +181,3 @@ func (d *Data) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	v.UnmarshalEasyJSON(l)
 	d.v = &v
 }
-
-func (d Data) TurnIntoHermit() Hermit {
-	x, ok := d.v.(*internal.Data)
-	if ok {
-		return Hermit{*x}
-	}
-	return Hermit{}
-}

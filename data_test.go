@@ -122,18 +122,6 @@ func TestData_MarshalEasyJSON(t *testing.T) {
 	marshalIndirect(t, marshal, unmarshal)
 }
 
-func TestData_TurnIntoHermit(t *testing.T) {
-	if !reflect.DeepEqual(Nil.TurnIntoHermit(), Hermit{}) {
-		t.Fatal(`!reflect.DeepEqual(Nil.TurnIntoHermit(), TurnIntoHermit{})`)
-	}
-	if WrapInt(1000).TurnIntoHermit().d.N != 1000 {
-		t.Fatal(`WrapInt(1000).TurnIntoHermit().d.N != 1000`)
-	}
-	if !bytes.Equal(WrapString("hello").TurnIntoHermit().d.X, []byte("hello")) {
-		t.Fatal(`!bytes.Equal(WrapString("hello").TurnIntoHermit().d.X, []byte("hello"))`)
-	}
-}
-
 func TestData_Marshallable(t *testing.T) {
 	if WrapInt(100).Marshallable() != true {
 		t.Fatal(`WrapInt(100).Marshallable() != true`)

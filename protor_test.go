@@ -2,16 +2,29 @@ package live
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 )
 
-func TestFromHermitBytes1(t *testing.T) {
+func TestData_NewProtor(t *testing.T) {
+	if !reflect.DeepEqual(NewProtor(Nil), Protor{}) {
+		t.Fatal(`!reflect.DeepEqual(NewProtor(Nil), Protor{})`)
+	}
+	if NewProtor(WrapInt(1000)).d.N != 1000 {
+		t.Fatal(`NewProtor(WrapInt(1000)).d.N != 1000`)
+	}
+	if !bytes.Equal(NewProtor(WrapString("hello")).d.X, []byte("hello")) {
+		t.Fatal(`!bytes.Equal(NewProtor(WrapString("hello")).d.X, []byte("hello"))`)
+	}
+}
+
+func TestFromProtorBytes1(t *testing.T) {
 	d1 := WrapInt64(100)
-	buf, err := d1.TurnIntoHermit().Marshal()
+	buf, err := NewProtor(d1).Marshal()
 	if err != nil {
 		t.Fatal(err)
 	}
-	d2, err := FromHermitBytes(buf)
+	d2, err := FromProtorBytes(buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,14 +33,14 @@ func TestFromHermitBytes1(t *testing.T) {
 	}
 }
 
-func TestFromHermitBytes2(t *testing.T) {
+func TestFromProtorBytes2(t *testing.T) {
 	d1 := WrapString("hello")
 	var buf [64]byte
-	n, err := d1.TurnIntoHermit().MarshalTo(buf[:])
+	n, err := NewProtor(d1).MarshalTo(buf[:])
 	if err != nil {
 		t.Fatal(err)
 	}
-	d2, err := FromHermitBytes(buf[:n])
+	d2, err := FromProtorBytes(buf[:n])
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +49,7 @@ func TestFromHermitBytes2(t *testing.T) {
 	}
 }
 
-func TestFromHermitBytes3(t *testing.T) {
+func TestFromProtorBytes3(t *testing.T) {
 	foo := struct {
 		Str string
 		Num int
@@ -46,9 +59,9 @@ func TestFromHermitBytes3(t *testing.T) {
 	}
 
 	d1 := MustWrapObject(&foo)
-	hermit := d1.TurnIntoHermit()
-	buf := make([]byte, hermit.Size())
-	n, err := hermit.MarshalToSizedBuffer(buf)
+	protor := NewProtor(d1)
+	buf := make([]byte, protor.Size())
+	n, err := protor.MarshalToSizedBuffer(buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +69,7 @@ func TestFromHermitBytes3(t *testing.T) {
 		t.Fatal(`n != len(buf)`)
 	}
 
-	d2, err := FromHermitBytes(buf[:n])
+	d2, err := FromProtorBytes(buf[:n])
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,8 +83,8 @@ func TestFromHermitBytes3(t *testing.T) {
 	}
 }
 
-func TestFromHermitBytes4(t *testing.T) {
-	d, err := FromHermitBytes([]byte("hello"))
+func TestFromProtorBytes4(t *testing.T) {
+	d, err := FromProtorBytes([]byte("hello"))
 	if err == nil {
 		t.Fatal(`err == nil`)
 	}
