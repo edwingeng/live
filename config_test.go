@@ -14,16 +14,16 @@ func TestBlacklist(t *testing.T) {
 		defer rec()
 		cfg := NewConfig([]string{"github.com/edwingeng/live/internal"})
 		var v internal.Data
-		cfg.WrapValueDirect(v)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(v)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 
 	func() {
 		defer rec()
 		cfg := NewConfig([]string{"github.com/edwingeng/live"})
 		var v internal.Data
-		cfg.WrapValueDirect(v)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(v)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 
 	func() {
@@ -37,12 +37,12 @@ func TestBlacklist(t *testing.T) {
 		defer rec()
 		cfg := NewConfig([]string{"github.com/edwingeng/live"})
 		WrapValueDirect(&bar{}, cfg)
-		t.Fatal("WrapValueDirect() should panic")
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 
 	cfg := NewConfig([]string{"github.com/edwin"})
 	var v internal.Data
-	cfg.WrapValueDirect(v)
+	cfg.wrapValueDirect(v)
 
 	empty := NewConfig([]string{""})
 	if empty.Blacklist != nil {
@@ -79,34 +79,34 @@ func TestBlacklist_cover(t *testing.T) {
 //gocyclo:ignore
 func TestConfig_WrapPrimitives(t *testing.T) {
 	cfg := NewConfig(nil)
-	if cfg.WrapValueDirect(1).Value() != 1 {
+	if cfg.wrapValueDirect(1).Value() != 1 {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(int8(1)).Value() != int8(1) {
+	if cfg.wrapValueDirect(int8(1)).Value() != int8(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(int16(1)).Value() != int16(1) {
+	if cfg.wrapValueDirect(int16(1)).Value() != int16(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(int32(1)).Value() != int32(1) {
+	if cfg.wrapValueDirect(int32(1)).Value() != int32(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(int64(1)).Value() != int64(1) {
+	if cfg.wrapValueDirect(int64(1)).Value() != int64(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(uint(1)).Value() != uint(1) {
+	if cfg.wrapValueDirect(uint(1)).Value() != uint(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(uint8(1)).Value() != uint8(1) {
+	if cfg.wrapValueDirect(uint8(1)).Value() != uint8(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(uint16(1)).Value() != uint16(1) {
+	if cfg.wrapValueDirect(uint16(1)).Value() != uint16(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(uint32(1)).Value() != uint32(1) {
+	if cfg.wrapValueDirect(uint32(1)).Value() != uint32(1) {
 		t.Fatal("impossible")
 	}
-	if cfg.WrapValueDirect(uint64(1)).Value() != uint64(1) {
+	if cfg.wrapValueDirect(uint64(1)).Value() != uint64(1) {
 		t.Fatal("impossible")
 	}
 
@@ -131,8 +131,8 @@ func TestConfig_WrapUintptr(t *testing.T) {
 	func() {
 		defer rec()
 		cfg := NewConfig(nil)
-		cfg.WrapValueDirect(uintptr(0))
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(uintptr(0))
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -143,7 +143,7 @@ func TestConfig_WrapComplex64(t *testing.T) {
 		complex(1, 1.54321),
 	}
 	for _, v := range a {
-		d := cfg.WrapValueDirect(v)
+		d := cfg.wrapValueDirect(v)
 		switch u := d.Value().(type) {
 		case complex64:
 			if real(u) != real(v) {
@@ -165,7 +165,7 @@ func TestConfig_WrapComplex128(t *testing.T) {
 		complex(1, 1.54321),
 	}
 	for _, v := range a {
-		d := cfg.WrapValueDirect(v)
+		d := cfg.wrapValueDirect(v)
 		switch u := d.Value().(type) {
 		case complex128:
 			if real(u) != real(v) {
@@ -184,7 +184,7 @@ func TestConfig_WrapArray(t *testing.T) {
 	cfg := NewConfig(nil)
 	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
 	a := [3]*uint64{&n1, &n2, &n3}
-	d := cfg.WrapValueDirect(a)
+	d := cfg.wrapValueDirect(a)
 	switch u := d.Value().(type) {
 	case [3]*uint64:
 		if u != a {
@@ -202,7 +202,7 @@ func TestConfig_WrapArray(t *testing.T) {
 			func() {},
 		}
 		WrapValueDirect(vals, cfg)
-		t.Fatal("WrapValueDirect() should panic")
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -217,7 +217,7 @@ func TestConfig_WrapChan(t *testing.T) {
 		ch <- wrapper{n: v}
 	}
 
-	d := cfg.WrapValueDirect(ch)
+	d := cfg.wrapValueDirect(ch)
 	switch u := d.Value().(type) {
 	case chan wrapper:
 		for _, v := range a {
@@ -232,16 +232,16 @@ func TestConfig_WrapChan(t *testing.T) {
 
 	func() {
 		defer rec()
-		cfg.WrapValueDirect(make(chan []uintptr))
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(make(chan []uintptr))
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
 func TestConfig_WrapFunc(t *testing.T) {
 	defer rec()
 	cfg := NewConfig(nil)
-	cfg.WrapValueDirect(func() {})
-	t.Fatal("WrapValueDirect() should panic")
+	cfg.wrapValueDirect(func() {})
+	t.Fatal("wrapValueDirect() should panic")
 }
 
 type printer interface {
@@ -263,28 +263,28 @@ type myPrinterWrapper2 struct {
 func TestConfig_WrapInterface(t *testing.T) {
 	cfg := NewConfig(nil)
 	var v interface{} = 100
-	cfg.WrapValueDirect(v)
+	cfg.wrapValueDirect(v)
 
-	if cfg.WrapValueDirect(nil).Value() != nil {
-		t.Fatal("WrapValueDirect(nil).Value() != nil")
+	if cfg.wrapValueDirect(nil).Value() != nil {
+		t.Fatal("wrapValueDirect(nil).Value() != nil")
 	}
 
-	if cfg.WrapValueDirect([]byte(nil)).Value() == nil {
-		t.Fatal("WrapValueDirect([]byte(nil)).Value() == nil")
+	if cfg.wrapValueDirect([]byte(nil)).Value() == nil {
+		t.Fatal("wrapValueDirect([]byte(nil)).Value() == nil")
 	}
 
 	var w1 myPrinterWrapper1
 	w1.p = myPrinter{}
 	func() {
 		defer rec()
-		cfg.WrapValueDirect(&w1)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(&w1)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 
 	var w2 myPrinterWrapper2
 	w2.p = myPrinter{}
-	if cfg.WrapValueDirect(&w2).Value() != &w2 {
-		t.Fatal("cfg.WrapValueDirect(&w2).Value() != &w2")
+	if cfg.wrapValueDirect(&w2).Value() != &w2 {
+		t.Fatal("cfg.wrapValueDirect(&w2).Value() != &w2")
 	}
 }
 
@@ -295,7 +295,7 @@ func TestConfig_WrapMap(t *testing.T) {
 		2: "20",
 		3: "30",
 	}
-	d := cfg.WrapValueDirect(m)
+	d := cfg.wrapValueDirect(m)
 	switch u := d.Value().(type) {
 	case map[int]string:
 		if len(u) != len(m) {
@@ -316,15 +316,15 @@ func TestConfig_WrapMap(t *testing.T) {
 			n uintptr
 		}
 		xMap := make(map[wrapper][]interface{})
-		cfg.WrapValueDirect(xMap)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(xMap)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 
 	func() {
 		defer rec()
 		xMap := make(map[int][]interface{})
-		cfg.WrapValueDirect(xMap)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(xMap)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -345,8 +345,8 @@ func TestConfig_WrapPointer(t *testing.T) {
 	func() {
 		defer rec()
 		var v interface{}
-		cfg.WrapValueDirect(&v)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(&v)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -354,7 +354,7 @@ func TestConfig_WrapSlice(t *testing.T) {
 	cfg := NewConfig(nil)
 	var n1, n2, n3 uint64 = 0, 1, math.MaxUint64
 	a := []*uint64{&n1, &n2, &n3}
-	d := cfg.WrapValueDirect(a)
+	d := cfg.wrapValueDirect(a)
 	switch u := d.Value().(type) {
 	case []*uint64:
 		for i, v := range u {
@@ -374,7 +374,7 @@ func TestConfig_WrapSlice(t *testing.T) {
 			func() {},
 		}
 		WrapValueDirect(vals, cfg)
-		t.Fatal("WrapValueDirect() should panic")
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -383,8 +383,8 @@ func TestConfig_WrapUnsafePointer(t *testing.T) {
 		defer rec()
 		cfg := NewConfig(nil)
 		ptr := unsafe.Pointer(&cfg)
-		cfg.WrapValueDirect(ptr)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(ptr)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -413,7 +413,7 @@ func TestConfig_WrapStruct(t *testing.T) {
 	}
 	v.setA(200)
 
-	d := cfg.WrapValueDirect(v)
+	d := cfg.wrapValueDirect(v)
 	switch u := d.Value().(type) {
 	case omega:
 		if u != v {
@@ -429,8 +429,8 @@ func TestConfig_WrapStruct(t *testing.T) {
 			N int
 			X interface{}
 		}{}
-		cfg.WrapValueDirect(q)
-		t.Fatal("WrapValueDirect() should panic")
+		cfg.wrapValueDirect(q)
+		t.Fatal("wrapValueDirect() should panic")
 	}()
 }
 
@@ -442,7 +442,7 @@ func TestConfig_EmbeddedLiveData(t *testing.T) {
 	var f1 foo
 	f1.X = WrapInt(100)
 	cfg := NewConfig(nil)
-	cfg.WrapValueDirect(&f1)
+	cfg.wrapValueDirect(&f1)
 
 	data, err := json.Marshal(&f1)
 	if err != nil {
@@ -461,26 +461,26 @@ func TestConfig_FieldWithLiveTag(t *testing.T) {
 	func() {
 		defer rec()
 		cfg := NewConfig(nil)
-		cfg.WrapValueDirect(&struct {
+		cfg.wrapValueDirect(&struct {
 			X func() `live:"false"`
 		}{})
-		t.Fatal(`WrapValueDirect() should panic`)
+		t.Fatal(`wrapValueDirect() should panic`)
 	}()
 
 	func() {
 		defer rec()
 		cfg := NewConfig(nil)
-		cfg.WrapValueDirect(&struct {
+		cfg.wrapValueDirect(&struct {
 			X func() `live:"0"`
 		}{})
-		t.Fatal(`WrapValueDirect() should panic`)
+		t.Fatal(`wrapValueDirect() should panic`)
 	}()
 
 	cfg := NewConfig(nil)
-	cfg.WrapValueDirect(&struct {
+	cfg.wrapValueDirect(&struct {
 		X func() `live:"true"`
 	}{})
-	cfg.WrapValueDirect(&struct {
+	cfg.wrapValueDirect(&struct {
 		X func() `live:"1"`
 	}{})
 }
@@ -488,7 +488,7 @@ func TestConfig_FieldWithLiveTag(t *testing.T) {
 func TestConfig_SkipTypeCheck(t *testing.T) {
 	cfg := NewConfig(nil)
 	cfg.SkipTypeCheck = true
-	cfg.WrapValueDirect(&struct {
+	cfg.wrapValueDirect(&struct {
 		X func()
 	}{})
 }
@@ -508,7 +508,7 @@ type node3 struct {
 func TestConfig_CyclicTypeReference(t *testing.T) {
 	cfg := NewConfig(nil)
 	var n1 node1
-	cfg.WrapValueDirect(&n1)
+	cfg.wrapValueDirect(&n1)
 	var n2 node2
-	cfg.WrapValueDirect(&n2)
+	cfg.wrapValueDirect(&n2)
 }

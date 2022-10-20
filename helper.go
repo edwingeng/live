@@ -169,5 +169,5 @@ func MustWrapProtobufObject(obj ProtobufMarshaler) Data {
 
 // WrapValueDirect converts almost anything into a live data, which is not marshallable.
 func WrapValueDirect(v interface{}, cfg Config) Data {
-	return cfg.WrapValueDirect(v)
+	return cfg.wrapValueDirect(v)
 }

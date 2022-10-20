@@ -127,7 +127,7 @@ func TestData_Marshallable(t *testing.T) {
 		t.Fatal(`WrapInt(100).Marshallable() != true`)
 	}
 	cfg := NewConfig(nil)
-	if cfg.WrapValueDirect(100).Marshallable() != false {
-		t.Fatal(`cfg.WrapValueDirect(100).Marshallable() != false`)
+	if cfg.wrapValueDirect(100).Marshallable() != false {
+		t.Fatal(`cfg.wrapValueDirect(100).Marshallable() != false`)
 	}
 }

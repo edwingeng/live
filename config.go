@@ -24,8 +24,8 @@ func (bl blacklist) cover(pkgPath string) bool {
 
 // Config has a blacklist, with which it prevents any object of a type defined in a plugin from
 // being converted to a live data by WrapValueDirect. Config also checks whether an object refers to,
-// directly or indirectly, an unsupported type. The unsupported types are: uintptr, func,
-// interface{}, any, and unsafe.Pointer. It panics if any illegal type is found.
+// directly or indirectly, an unsupported type. The unsupported types are: func, uintptr,
+// interface{}, any, and unsafe.Pointer. It panics if any of these types is found.
 //
 // To force a struct field to bypass the check, give it the following tag: `live:"true"`.
 type Config struct {
@@ -43,7 +43,7 @@ func NewConfig(pkgBlacklist []string) Config {
 	return cfg
 }
 
-func (cfg Config) WrapValueDirect(v interface{}) Data {
+func (cfg Config) wrapValueDirect(v interface{}) Data {
 	if v == nil {
 		return Nil
 	}
